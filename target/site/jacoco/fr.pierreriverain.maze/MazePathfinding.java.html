@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MazePathfinding.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Labymany</a> &gt; <a href="index.source.html" class="el_package">fr.pierreriverain.maze</a> &gt; <span class="el_source">MazePathfinding.java</span></div><h1>MazePathfinding.java</h1><pre class="source lang-java linenums">package fr.pierreriverain.maze;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Cette classe contient toutes les informations concernant le chemin entre les deux curseurs.
+ * @author Pierre Riverain
+ */
+public class MazePathfinding {
+	
+	/**
+	 * Cet objet représente le labyrinthe ou se trouve les deux curseurs.
+	 */
+	private Maze maze;
+	
+	/**
+	 * Cet objet représente le curseur de départ.
+	 */
+	private MazeCursor startMazeCursor;
+	
+	/**
+	 * Cet objet représente le curseur d'arrivée.
+	 */
+	private MazeCursor endMazeCursor;
+	
+	/**
+	 * Ce booléen indique si l'intelligence artificielle est arrêté (&lt;code&gt;true&lt;/code&gt;) ou non (&lt;code&gt;false&lt;/code&gt;).
+	 */
+<span class="nc" id="L30">	private boolean stopped = true;</span>
+	
+	/**
+	 * Ce booléen indique si le chemin entre le curseur de départ et d'arrivée est généré (&lt;code&gt;true&lt;/code&gt;), ou non (&lt;code&gt;false&lt;/code&gt;).
+	 */
+<span class="nc" id="L35">	private boolean mazePathGenerated = false;</span>
+	
+	/**
+	 * Cette liste contient tous les curseurs qui permettent d'indiquer le chemin entre le curseur de départ et d'arrivée.
+	 */
+<span class="nc" id="L40">	private List&lt;MazeCursor&gt; mazePath = new ArrayList&lt;MazeCursor&gt;();</span>
+	
+	/**
+	 * Ce constructeur permet de définir les différents objets nécessaire pour le calcul du chemin.
+	 * @param maze le labyrinthe où se trouve les curseurs et opu le chemin doit être calculé.
+	 * @param startMazeCursor Le curseur de départ.
+	 * @param endMazeCursor Le curseur d'arrivée.
+	 */
+	public MazePathfinding(Maze maze, MazeCursor startMazeCursor, MazeCursor endMazeCursor) throws NullPointerException {
+<span class="nc" id="L49">		super();</span>
+		
+<span class="nc bnc" id="L51" title="All 2 branches missed.">		if (maze == null) {</span>
+<span class="nc" id="L52">			throw new NullPointerException(&quot;Le paramètre maze ne doit pas être nulle.&quot;);</span>
+		}
+		
+<span class="nc bnc" id="L55" title="All 2 branches missed.">		if (startMazeCursor == null) {</span>
+<span class="nc" id="L56">			throw new NullPointerException(&quot;Le paramètre startMazeCursor ne doit pas être nulle.&quot;);</span>
+		}
+		
+<span class="nc bnc" id="L59" title="All 2 branches missed.">		if (endMazeCursor == null) {</span>
+<span class="nc" id="L60">			throw new NullPointerException(&quot;Le paramètre endMazeCursor ne doit pas être nulle.&quot;);</span>
+		}
+		
+<span class="nc" id="L63">		this.maze = maze;</span>
+<span class="nc" id="L64">		this.startMazeCursor = startMazeCursor;</span>
+<span class="nc" id="L65">		this.endMazeCursor = endMazeCursor;</span>
+<span class="nc" id="L66">	}</span>
+	
+	/**
+	 * Cet accesseur permet d'obtenir le labyrinthe où le chemin doit être calculé.
+	 * @return Le labyrinthe où doit être calculé le chemin.
+	 */
+	public Maze getMaze() {
+<span class="nc" id="L73">		return maze;</span>
+	}
+
+	/**
+	 * Ce muttateur permet de définir le labyrinthe où le chemin doit être calculé.
+	 * @param maze the maze Le labyrinthe où doit être calculé le chemin.
+	 */
+	public void setMaze(Maze maze) {
+<span class="nc bnc" id="L81" title="All 2 branches missed.">		if(stopped) {</span>
+<span class="nc bnc" id="L82" title="All 2 branches missed.">			if (maze == null) {</span>
+<span class="nc" id="L83">				throw new NullPointerException(&quot;Le paramètre maze ne doit pas être nulle.&quot;);</span>
+			}
+<span class="nc" id="L85">			this.maze = maze;</span>
+		}
+<span class="nc" id="L87">	}</span>
+
+	/**
+	 * Cet accesseur permet d'obtenir le curseur de départ (à partir duquel le calcul du chemin démarrera).
+	 * @return Le curseur de départ.
+	 */
+	public MazeCursor getStartMazeCursor() {
+<span class="nc" id="L94">		return startMazeCursor;</span>
+	}
+
+	/**
+	 * Ce muttateur permet de définir le curseur de départ (à partir duquel le calcul du chemin démarrera).
+	 * @param startMazeCursor Le curseur de départ.
+	 */
+	public void setStartMazeCursor(MazeCursor startMazeCursor) throws NullPointerException {
+<span class="nc bnc" id="L102" title="All 2 branches missed.">		if(stopped) {</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">			if (startMazeCursor == null) {</span>
+<span class="nc" id="L104">				throw new NullPointerException(&quot;Le paramètre startMazeCursor ne doit pas être nulle.&quot;);</span>
+			}
+<span class="nc" id="L106">			this.startMazeCursor = startMazeCursor;</span>
+		}
+<span class="nc" id="L108">	}</span>
+
+	/**
+	 * Cet accesseur permet d'obtenir le curseur de fin (la où s'arrête le calcul du chemin).
+	 * @return Le curseur de fin.
+	 */
+	public MazeCursor getEndMazeCursor() {
+<span class="nc" id="L115">		return endMazeCursor;</span>
+	}
+
+	/**
+	 * Ce muttateur permet de définir le curseur de fin (la où s'arrête le calcul du chemin).
+	 * @param endMazeCursor Le curseur de fin.
+	 */
+	public void setEndMazeCursor(MazeCursor endMazeCursor) throws NullPointerException {
+<span class="nc bnc" id="L123" title="All 2 branches missed.">		if(stopped) {</span>
+<span class="nc bnc" id="L124" title="All 2 branches missed.">			if (endMazeCursor == null) {</span>
+<span class="nc" id="L125">				throw new NullPointerException(&quot;Le paramètre endMazeCursor ne doit pas être nulle.&quot;);</span>
+			}
+<span class="nc" id="L127">			this.endMazeCursor = endMazeCursor;</span>
+		}
+<span class="nc" id="L129">	}</span>
+
+	/**
+	 * Cet accesseur permet de savoir si l'intelligence artificelle est arrêté ou non.
+	 * @return &lt;code&gt;true&lt;/code&gt; si l'intelligence est arrêté, &lt;code&gt;false&lt;/code&gt; sinon.
+	 */
+	public boolean isStopped() {
+<span class="nc" id="L136">		return stopped;</span>
+	}
+
+	/**
+	 * Cet accesseur permet de savoir si l'intelligence artificielle à généré le chemin entre le curseur de départ et d'arrivée.
+	 * @return &lt;code&gt;true&lt;/code&gt; si l'intelligence à généré le chemin entre le curseur de départ et d'arrivée, &lt;code&gt;false&lt;/code&gt; sinon.
+	 */
+	public boolean isMazePathGenerated() {
+<span class="nc" id="L144">		return mazePathGenerated;</span>
+	}
+
+	/**
+	 * Cet accesseur permet d'obtenir la liste qui contient tous les curseurs qui permettent d'indiquer le chemin entre le curseur de départ et d'arrivée.
+	 * @return La liste qui contient tous les curseurs qui peremttent d'indiquer le chemin entre le curseur de départ et d'arrivée.
+	 */
+	public List&lt;MazeCursor&gt; getMazePath() {
+<span class="nc" id="L152">		return mazePath;</span>
+	}
+	
+	/**
+	 * Cette méthode lance la génération du chemin.
+	 */
+	public MazePathfinding generateMazePath() throws Exception {
+		
+<span class="nc bnc" id="L160" title="All 2 branches missed.">		if (!maze.isGenerated()) {</span>
+<span class="nc" id="L161">			throw new Exception(&quot;Le labyrinthe n'est pas généré, l'intelligence artificielle ne peut pas générer de chemin quand le labyrinthe n'est pas généré.&quot;);</span>
+		}
+		
+<span class="nc" id="L164">		MazeCursor currentMazeCursor = startMazeCursor.copy();</span>
+<span class="nc" id="L165">		mazePathGenerated = false;</span>
+<span class="nc bnc" id="L166" title="All 2 branches missed.">		if (!startMazeCursor.isSameCoordinates(endMazeCursor)) {</span>
+<span class="nc bnc" id="L167" title="All 2 branches missed.">			for (MazeCellDoor mazeCellDoor : maze.getMazeCells()[currentMazeCursor.getMazeCursorPosX()][currentMazeCursor.getMazeCursorPosY()].getDoorsOpened()) {</span>
+<span class="nc" id="L168">				MazeCursor newMazeCursor = currentMazeCursor.copy();</span>
+<span class="nc" id="L169">				List&lt;MazeCursor&gt; tempMazePath = new ArrayList&lt;MazeCursor&gt;();</span>
+<span class="nc bnc" id="L170" title="All 5 branches missed.">				switch(mazeCellDoor) {</span>
+				case NORTH:
+<span class="nc" id="L172">					newMazeCursor.setMazeCursorPosY(newMazeCursor.getMazeCursorPosY()-1);</span>
+<span class="nc" id="L173">					tempMazePath = analyzeMazeCell(newMazeCursor, MazeCellDoor.SOUTH);</span>
+<span class="nc bnc" id="L174" title="All 2 branches missed.">					if (!tempMazePath.isEmpty()) {</span>
+<span class="nc" id="L175">						mazePath.add(currentMazeCursor);</span>
+<span class="nc" id="L176">						mazePath.addAll(tempMazePath);</span>
+					}
+					break;
+				case EAST:
+<span class="nc" id="L180">					newMazeCursor.setMazeCursorPosX(newMazeCursor.getMazeCursorPosX()+1);</span>
+<span class="nc" id="L181">					tempMazePath = analyzeMazeCell(newMazeCursor, MazeCellDoor.WEST);</span>
+<span class="nc bnc" id="L182" title="All 2 branches missed.">					if (!tempMazePath.isEmpty()) {</span>
+<span class="nc" id="L183">						mazePath.add(currentMazeCursor);</span>
+<span class="nc" id="L184">						mazePath.addAll(tempMazePath);</span>
+					}
+					break;
+				case SOUTH:
+<span class="nc" id="L188">					newMazeCursor.setMazeCursorPosY(newMazeCursor.getMazeCursorPosY()+1);</span>
+<span class="nc" id="L189">					tempMazePath = analyzeMazeCell(newMazeCursor, MazeCellDoor.NORTH);</span>
+<span class="nc bnc" id="L190" title="All 2 branches missed.">					if (!tempMazePath.isEmpty()) {</span>
+<span class="nc" id="L191">						mazePath.add(currentMazeCursor);</span>
+<span class="nc" id="L192">						mazePath.addAll(tempMazePath);</span>
+					}
+					break;
+				case WEST:
+<span class="nc" id="L196">					newMazeCursor.setMazeCursorPosX(newMazeCursor.getMazeCursorPosX()-1);</span>
+<span class="nc" id="L197">					tempMazePath = analyzeMazeCell(newMazeCursor, MazeCellDoor.EAST);</span>
+<span class="nc bnc" id="L198" title="All 2 branches missed.">					if (!tempMazePath.isEmpty()) {</span>
+<span class="nc" id="L199">						mazePath.add(currentMazeCursor);</span>
+<span class="nc" id="L200">						mazePath.addAll(tempMazePath);</span>
+					}
+					break;
+				}
+<span class="nc" id="L204">			}</span>
+		} else {
+<span class="nc" id="L206">			mazePath.add(currentMazeCursor);</span>
+		}
+		
+<span class="nc bnc" id="L209" title="All 2 branches missed.">		mazePathGenerated = !mazePath.isEmpty();</span>
+<span class="nc" id="L210">		return this;</span>
+	}
+	
+	/**
+	 * Cette méthode permet d'analyser la cellule (qui se situe aux coordonnées indiqué par le paramètre currentMazeCursor) afin de trouver le curseur d'arrivée. Si l'arrivée se trouve à cet emplacement ou si la cellule se trouve dans le chemin
+	 * menant vers l'arrivée, cette méthode retourne une liste de curseurs qui compose le chemin, sinon, elle retourne une liste vide.
+	 * @param currentMazeCursor Le curseur définissant les coordonnées de la cellule à analyser.
+	 * @param mazeCellDoorDoNotAnalyze Ce paramètre permet de dire de ne pas analyser la porte indiqué car l'intelligence artificielle à déjà analysée la cellule 
+	 * @return Une liste de curseurs quand l'arrivée se trouve aux emplacements de la cellule ou quand cette cellule mêne vers l'arrivée, sinon une liste vide.
+	 */
+	private List&lt;MazeCursor&gt; analyzeMazeCell(MazeCursor currentMazeCursor, MazeCellDoor mazeCellDoorDoNotAnalyze) {
+<span class="nc" id="L221">		List&lt;MazeCursor&gt; tempMazePath = new ArrayList&lt;MazeCursor&gt;();</span>
+<span class="nc bnc" id="L222" title="All 2 branches missed.">		if (currentMazeCursor.isSameCoordinates(endMazeCursor)) {</span>
+<span class="nc" id="L223">			tempMazePath.add(endMazeCursor);</span>
+		} else {
+<span class="nc bnc" id="L225" title="All 2 branches missed.">			for (MazeCellDoor mazeCellDoor : maze.getMazeCells()[currentMazeCursor.getMazeCursorPosX()][currentMazeCursor.getMazeCursorPosY()].getDoorsOpened()) {</span>
+<span class="nc bnc" id="L226" title="All 2 branches missed.">				if (!mazeCellDoor.equals(mazeCellDoorDoNotAnalyze)) {</span>
+<span class="nc" id="L227">					MazeCursor newMazeCursor = currentMazeCursor.copy();</span>
+<span class="nc" id="L228">					List&lt;MazeCursor&gt; tempMazePath2 = null;</span>
+<span class="nc bnc" id="L229" title="All 5 branches missed.">					switch(mazeCellDoor) {</span>
+					case NORTH:
+<span class="nc" id="L231">						newMazeCursor.setMazeCursorPosY(newMazeCursor.getMazeCursorPosY()-1);</span>
+<span class="nc" id="L232">						tempMazePath2 = analyzeMazeCell(newMazeCursor, MazeCellDoor.SOUTH);</span>
+<span class="nc bnc" id="L233" title="All 2 branches missed.">						if (!tempMazePath2.isEmpty()) {</span>
+<span class="nc" id="L234">							tempMazePath.add(currentMazeCursor);</span>
+<span class="nc" id="L235">							tempMazePath.addAll(tempMazePath2);</span>
+						}
+						break;
+					case EAST:
+<span class="nc" id="L239">						newMazeCursor.setMazeCursorPosX(newMazeCursor.getMazeCursorPosX()+1);</span>
+<span class="nc" id="L240">						tempMazePath2 = analyzeMazeCell(newMazeCursor, MazeCellDoor.WEST);</span>
+<span class="nc bnc" id="L241" title="All 2 branches missed.">						if (!tempMazePath2.isEmpty()) {</span>
+<span class="nc" id="L242">							tempMazePath.add(currentMazeCursor);</span>
+<span class="nc" id="L243">							tempMazePath.addAll(tempMazePath2);</span>
+						}
+						break;
+					case SOUTH:
+<span class="nc" id="L247">						newMazeCursor.setMazeCursorPosY(newMazeCursor.getMazeCursorPosY()+1);</span>
+<span class="nc" id="L248">						tempMazePath2 = analyzeMazeCell(newMazeCursor, MazeCellDoor.NORTH);</span>
+<span class="nc bnc" id="L249" title="All 2 branches missed.">						if (!tempMazePath2.isEmpty()) {</span>
+<span class="nc" id="L250">							tempMazePath.add(currentMazeCursor);</span>
+<span class="nc" id="L251">							tempMazePath.addAll(tempMazePath2);</span>
+						}
+						break;
+					case WEST:
+<span class="nc" id="L255">						newMazeCursor.setMazeCursorPosX(newMazeCursor.getMazeCursorPosX()-1);</span>
+<span class="nc" id="L256">						tempMazePath2 = analyzeMazeCell(newMazeCursor, MazeCellDoor.EAST);</span>
+<span class="nc bnc" id="L257" title="All 2 branches missed.">						if (!tempMazePath2.isEmpty()) {</span>
+<span class="nc" id="L258">							tempMazePath.add(currentMazeCursor);</span>
+<span class="nc" id="L259">							tempMazePath.addAll(tempMazePath2);</span>
+						}
+						break;
+					}
+				}
+<span class="nc" id="L264">			}</span>
+		}
+		
+<span class="nc" id="L267">		return tempMazePath;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

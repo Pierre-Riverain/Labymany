@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PlayerControls.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Labymany</a> &gt; <a href="index.source.html" class="el_package">fr.pierreriverain.keyboard</a> &gt; <span class="el_source">PlayerControls.java</span></div><h1>PlayerControls.java</h1><pre class="source lang-java linenums">package fr.pierreriverain.keyboard;
+
+import org.jnativehook.keyboard.NativeKeyEvent;
+import org.jnativehook.keyboard.NativeKeyListener;
+
+import fr.pierreriverain.labymany.Labymany;
+
+/**
+ * Cette classe permet d'informer quand l'une des touches pour déplacer le pion du joueur à été frappé.
+ * @author Pierre Riverain
+ *
+ */
+public abstract class PlayerControls implements NativeKeyListener {
+	
+	/**
+	 * Cet objet représente l'instance de la classe de démarrage.
+	 */
+	protected Labymany start;
+	
+	public PlayerControls() {
+<span class="nc" id="L21">		super();</span>
+<span class="nc" id="L22">	}</span>
+	/**
+	 * Ce constructeur permet d'initialiser les attributs de cette classe. 
+	 * @param start L'instance de la classe de démarrage.
+	 */
+	public PlayerControls(Labymany start) {
+<span class="nc" id="L28">		super();</span>
+<span class="nc" id="L29">		this.start = start;</span>
+<span class="nc" id="L30">	}</span>
+	
+	/**
+	 * Cet accesseur permet d'obtenir l'instance de la classe de Démarrage.
+	 * @return La classe de démarrage.
+	 */
+	public Labymany getStart() {
+<span class="nc" id="L37">		return start;</span>
+	}
+	
+	/**
+	 * Ce muttateur permet de définir la classe de démarrage. Ceci permet de changer de scène.
+	 * @param start La classe de démarrage à définir.
+	 */
+	public void setStart(Labymany start) {
+<span class="nc" id="L45">		this.start = start;</span>
+<span class="nc" id="L46">	}</span>
+
+	/**
+	 * Cette méthode est appelé lorsqu'une touche du clavier à été frappé. Si c'est le cas, les notifications sont envoyés.
+	 */
+	@Override
+	public void nativeKeyPressed(NativeKeyEvent nativeKeyEvent) {
+<span class="nc bnc" id="L53" title="All 2 branches missed.">		if (nativeKeyEvent.getKeyCode() == start.getSettings().getKeyPlayDown()) {</span>
+<span class="nc" id="L54">			onKeyPlayDownPressed();</span>
+<span class="nc bnc" id="L55" title="All 2 branches missed.">		} else if (nativeKeyEvent.getKeyCode() == start.getSettings().getKeyPlayLeft()) {</span>
+<span class="nc" id="L56">			onKeyPlayLeftPressed();</span>
+<span class="nc bnc" id="L57" title="All 2 branches missed.">		} else if (nativeKeyEvent.getKeyCode() == start.getSettings().getKeyPlayRight()) {</span>
+<span class="nc" id="L58">			onKeyPlayRightPressed();</span>
+<span class="nc bnc" id="L59" title="All 2 branches missed.">		} else if (nativeKeyEvent.getKeyCode() == start.getSettings().getKeyPlayUp()) {</span>
+<span class="nc" id="L60">			onKeyPlayUpPressed();</span>
+		}
+<span class="nc" id="L62">	}</span>
+	
+	/**
+	 * Cette méthode est appelée quand la touche pour déplacer le pion du joueur vers le haut, à été frappée.
+	 */
+	public abstract void onKeyPlayUpPressed();
+	
+	/**
+	 * Cette méthode est appelée quand la touche pour déplacer le pion du joueur vers la droite, à été frappée.
+	 */
+	public abstract void onKeyPlayRightPressed();
+	
+	/**
+	 * Cette méthode est appelée quand la touche pour déplacer le pion du joueur vers le bas, à été frappée.
+	 */
+	public abstract void onKeyPlayDownPressed();
+	
+	/**
+	 * Cette méthode est appelée quand la touche pour déplacer le pion du joueur vers la gauche, à été frappée.
+	 */
+	public abstract void onKeyPlayLeftPressed();
+
+	@Override
+<span class="nc" id="L85">	public void nativeKeyTyped(NativeKeyEvent nativeKeyEvent) {}</span>
+
+	@Override
+<span class="nc" id="L88">	public void nativeKeyReleased(NativeKeyEvent nativeKeyEvent) {}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

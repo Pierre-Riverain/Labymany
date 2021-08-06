@@ -1,0 +1,737 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SettingsSceneController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Labymany</a> &gt; <a href="index.source.html" class="el_package">fr.pierreriverain.labymany.gui.view</a> &gt; <span class="el_source">SettingsSceneController.java</span></div><h1>SettingsSceneController.java</h1><pre class="source lang-java linenums">package fr.pierreriverain.labymany.gui.view;
+
+import java.awt.image.BufferedImage;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.net.MalformedURLException;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+
+import javax.imageio.ImageIO;
+
+import org.jnativehook.keyboard.NativeKeyEvent;
+import org.jnativehook.keyboard.NativeKeyListener;
+
+import fr.pierreriverain.keyboard.KeyboardScreen;
+import fr.pierreriverain.labymany.Labymany;
+import fr.pierreriverain.labymany.Settings;
+import fr.pierreriverain.maze.MazeCursor;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.stage.FileChooser;
+import javafx.util.Duration;
+
+/**
+ * Cette classe permet de gérer l'interface graphique qui permet de modifier les paramètres du jeu avec des animations d'apparitions et de disparitions sur les composants graphique de cette scène.
+ * @author Pierre Riverain
+ *
+ */
+public class SettingsSceneController {
+	
+	/**
+	 * Cet objet représente la classe de démarrage. Il permet d'accéder et de modifier les paramètres du jeu.
+	 */
+	private Labymany start;
+	
+	/**
+	 * Cet objet représente le panneaux des onglets de paramètres. Il est utilisé uniquement pour les animations d'apparition et de disparition.
+	 */
+	@FXML
+	private TabPane settingsTabPane;
+	
+	/**
+	 * Cet objet représente le spinner qui permet de modifier le délai de génération entre chaques images.
+	 */
+	@FXML
+	private Spinner&lt;Integer&gt; delayMazeGenerationSpinner;
+	
+	/**
+	 * Cet objet représente la zone de texte qui permet d'afficher la touche qui est défini pour déplacer le pion du joueur vers le haut.
+	 */
+	@FXML
+	private TextField keyPlayUpTextField;
+	
+	/**
+	 * Cet objet représente la zone de texte qui permet d'afficher la touche qui est défini pour déplacer le pion du joueur vers la droite.
+	 */
+	@FXML
+	private TextField keyPlayRightTextField;
+	
+	/**
+	 * Cet objet représente la zone de texte qui permet d'afficher la touche qui est défini pour déplacer le pion du joueur vers le bas.
+	 */
+	@FXML
+	private TextField keyPlayDownTextField;
+	
+	/**
+	 * Cet objet représente la zone de texte qui permet d'afficher la touche qui est défini pour déplacer le pion du joueur vers la gauche.
+	 */
+	@FXML
+	private TextField keyPlayLeftTextField;
+	
+	/**
+	 * Cet objet représente l'imageView qui affiche l'image du pion du joueur.
+	 */
+	@FXML
+	private ImageView playerCursorImageView;
+	
+	/**
+	 * Cet objet représente l'imageView qui affiche l'image de l'arrivée.
+	 */
+	@FXML
+	private ImageView playerWinCursorImageView;
+	
+	/**
+	 * Cet objet représente l'imageView qui affiche l'image du générateur.
+	 */
+	@FXML
+	private ImageView generatorCursorImageView;
+	
+	/**
+	 * Cet objet représente le bouton qui permet de sauvegarder les modifications des paramètres.
+	 */
+	@FXML
+	private Button saveModificationSettingsButton;
+	
+	/**
+	 * Cet objet représente le bouton qui permet d'annuler les modifications des paramètres.
+	 */
+	@FXML
+	private Button cancelModificationSettingsButton;
+
+	/**
+	 * Cet objet représente le bouton qui permet de définir la touche pour déplacer le pion du joueur vers le haut.
+	 */
+	@FXML
+	private Button setKeyPlayUpControlButton;
+	
+	/**
+	 * Cet objet représente le bouton qui permet de définir la touche pour déplacer le pion du joueur vers la droite.
+	 */
+	@FXML
+	private Button setKeyPlayRightControlButton;
+	
+	/**
+	 * Cet objet représente le bouton qui permet de définir la touche pour déplacer le pion du joueur vers le bas.
+	 */
+	@FXML
+	private Button setKeyPlayDownControlButton;
+	
+	/**
+	 * Cet objet représente le bouton qui permet de définir la touche pour déplacer le pion du joueur vers la gauche.
+	 */
+	@FXML
+	private Button setKeyPlayLeftControlButton;
+	
+	/**
+	 * Cet objet représente le bouton qui permet de définir la nouvelle image du pion du joueur.
+	 */
+	@FXML
+	private Button setPlayerCursorImageButton;
+	
+	/**
+	 * Cet objet représente le bouton qui permet de définir la nouvelle image de l'arrivée.
+	 */
+	@FXML
+	private Button setPlayerWinCursorImageButton;
+	
+	/**
+	 * Cet objet représente le bouton qui permet de définir la nouvelle image du curseur de génération. Elle est visible uniquement lors de la génération du labyrinthe et si le délai de l'animation de génération entre chaque image est supérieur à 0.
+	 */
+	@FXML
+	private Button setGeneratorCursorImageButton;
+	
+	/**
+	 * Cette collection permet de contrôler si la touche n'est pas défini pour une action. 
+	 */
+<span class="nc" id="L167">	private Set&lt;Integer&gt; controlCheckerListSet = new HashSet&lt;Integer&gt;();</span>
+	
+	/**
+	 * Cet entier permet d'enregistrer temporairement l'identifiant de la touche qui servira à déplacer le pion du joueur vers le haut.
+	 */
+	private int keyPlayUp;
+
+	/**
+	 * Cet entier permet d'enregistrer temporairement l'identifiant de la touche qui servira à déplacer le pion du joueur vers la droite.
+	 */
+	private int keyPlayRight;
+	
+	/**
+	 * Cet entier permet d'enregistrer temporairement l'identifiant de la touche qui servira à déplacer le pion du joueur vers le bas.
+	 */
+	private int keyPlayDown;
+
+	/**
+	 * Cet entier permet d'enregistrer temporairement l'identifiant de la touche qui servira à déplacer le pion du joueur vers la droite.
+	 */
+	private int keyPlayLeft;
+
+
+	public SettingsSceneController() {
+<span class="nc" id="L191">		super();</span>
+<span class="nc" id="L192">	}</span>
+	
+	/**
+	 * Cet accesseur permet d'obtenir l'instance de la classe de démarrage défini.
+	 * @return L'instance de la classe de démarrage.
+	 */
+	public Labymany getStart() {
+<span class="nc" id="L199">		return start;</span>
+	}
+
+	/**
+	 * Ce muttateur permet de définir l'instance de la classe de démarrage 
+	 * @param start L'instance de la classe de démmarrage.
+	 */
+	public void setStart(Labymany start) {
+<span class="nc" id="L207">		this.start = start;</span>
+<span class="nc" id="L208">		initializeValues();</span>
+<span class="nc" id="L209">	}</span>
+	
+	private void initializeValues() {
+<span class="nc" id="L212">		delayMazeGenerationSpinner.getValueFactory().setValue(start.getSettings().getMazeGenerationDelayAnimation());</span>
+		
+<span class="nc" id="L214">		keyPlayUp = start.getSettings().getKeyPlayUp();</span>
+<span class="nc" id="L215">		controlCheckerListSet.add(keyPlayUp);</span>
+<span class="nc" id="L216">		keyPlayUpTextField.setText(NativeKeyEvent.getKeyText(keyPlayUp));</span>
+		
+<span class="nc" id="L218">		keyPlayRight = start.getSettings().getKeyPlayRight();</span>
+<span class="nc" id="L219">		controlCheckerListSet.add(keyPlayRight);</span>
+<span class="nc" id="L220">		keyPlayRightTextField.setText(NativeKeyEvent.getKeyText(keyPlayRight));</span>
+		
+<span class="nc" id="L222">		keyPlayDown = start.getSettings().getKeyPlayDown();</span>
+<span class="nc" id="L223">		controlCheckerListSet.add(keyPlayDown);</span>
+<span class="nc" id="L224">		keyPlayDownTextField.setText(NativeKeyEvent.getKeyText(keyPlayDown));</span>
+		
+<span class="nc" id="L226">		keyPlayLeft = start.getSettings().getKeyPlayLeft();</span>
+<span class="nc" id="L227">		controlCheckerListSet.add(keyPlayLeft);</span>
+<span class="nc" id="L228">		keyPlayLeftTextField.setText(NativeKeyEvent.getKeyText(keyPlayLeft));</span>
+		
+<span class="nc" id="L230">		playerCursorImageView.setImage(SwingFXUtils.toFXImage(start.getSettings().getPlayerCursor().getMazeCursorPicture(), null));</span>
+<span class="nc" id="L231">		playerWinCursorImageView.setImage(SwingFXUtils.toFXImage(start.getSettings().getPlayerWinCursor().getMazeCursorPicture(), null));</span>
+<span class="nc" id="L232">		generatorCursorImageView.setImage(SwingFXUtils.toFXImage(start.getSettings().getGeneratorCursor().getMazeCursorPicture(), null));</span>
+<span class="nc" id="L233">	}</span>
+
+	/**
+	 * Cette méthode permet d'initialiser tous les composants graphiques de cette scène. Elle initialise également les composants &lt;code&gt;settingsTabPane&lt;/code&gt;, 
+	 * &lt;code&gt;cancelModificationSettingsButton&lt;/code&gt; et &lt;code&gt;saveModificationSettingsButton&lt;/code&gt; à 0 pour l'animation d'apparition.
+	 */
+	@FXML
+	private void initialize() {
+
+<span class="nc" id="L242">		settingsTabPane.setOpacity(0.0d);</span>
+<span class="nc" id="L243">		cancelModificationSettingsButton.setOpacity(0.0d);</span>
+<span class="nc" id="L244">		saveModificationSettingsButton.setOpacity(0.0d);</span>
+		
+<span class="nc" id="L246">		delayMazeGenerationSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 5000));</span>
+<span class="nc" id="L247">	}</span>
+	
+	/**
+	 * Cette méthode est appelé lorsque l'utilisateur appuis sur le bouton &lt;code&gt;saveModificationSettingsButton&lt;/code&gt;. Elle permet de sauvegarder les changements des paramètres.
+	 */
+	@FXML
+	private void onSaveModificationSettingsButtonClicked() {
+
+<span class="nc" id="L255">		Settings settings = new Settings();</span>
+		
+		try {
+<span class="nc" id="L258">			settings.setMazeGenerationDelayAnimation(delayMazeGenerationSpinner.getValue());</span>
+			
+<span class="nc" id="L260">			settings.setKeyPlayUp(keyPlayUp);</span>
+<span class="nc" id="L261">			settings.setKeyPlayRight(keyPlayRight);</span>
+<span class="nc" id="L262">			settings.setKeyPlayDown(keyPlayDown);</span>
+<span class="nc" id="L263">			settings.setKeyPlayLeft(keyPlayLeft);</span>
+<span class="nc" id="L264">			settings.getPictureFolder().mkdirs();</span>
+			
+<span class="nc" id="L266">			MazeCursor playerCursor = new MazeCursor();</span>
+<span class="nc" id="L267">			BufferedImage playerCursorImage = SwingFXUtils.fromFXImage(playerCursorImageView.getImage(), null);</span>
+<span class="nc" id="L268">			playerCursor.setMazeCursorPicture(playerCursorImage);</span>
+<span class="nc" id="L269">			ImageIO.write(playerCursorImage, &quot;png&quot;, settings.getPlayerCursorImageFile());</span>
+<span class="nc" id="L270">			settings.setPlayerCursor(playerCursor);</span>
+			
+<span class="nc" id="L272">			MazeCursor playerWinCursor = new MazeCursor();</span>
+<span class="nc" id="L273">			BufferedImage playerWinCursorImage = SwingFXUtils.fromFXImage(playerWinCursorImageView.getImage(), null);</span>
+<span class="nc" id="L274">			playerWinCursor.setMazeCursorPicture(playerWinCursorImage);</span>
+<span class="nc" id="L275">			ImageIO.write(playerWinCursorImage, &quot;png&quot;, settings.getPlayerWinCursorImageFile());</span>
+<span class="nc" id="L276">			settings.setPlayerWinCursor(playerWinCursor);</span>
+			
+<span class="nc" id="L278">			MazeCursor generatorCursor = new MazeCursor();</span>
+<span class="nc" id="L279">			BufferedImage generatorCursorImage = SwingFXUtils.fromFXImage(generatorCursorImageView.getImage(), null);</span>
+<span class="nc" id="L280">			generatorCursor.setMazeCursorPicture(generatorCursorImage);</span>
+<span class="nc" id="L281">			ImageIO.write(generatorCursorImage, &quot;png&quot;, settings.getGeneratorCursorImageFile());</span>
+<span class="nc" id="L282">			settings.setGeneratorCursor(generatorCursor);</span>
+			
+<span class="nc" id="L284">			ObjectOutputStream settingsWriter = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(new File(&quot;labymany.settings&quot;))));</span>
+<span class="nc" id="L285">			settingsWriter.writeObject(settings);</span>
+<span class="nc" id="L286">			settingsWriter.close();</span>
+<span class="nc" id="L287">		} catch (Exception e) {</span>
+<span class="nc" id="L288">			start.showError(e, &quot;L'erreur suivante s'est produite pendant l'enregistrement des modifications des paramètres. Désolé pour le désagrément encouru : &quot;);</span>
+<span class="nc" id="L289">		}</span>
+		
+<span class="nc" id="L291">		start.setSettings(settings);</span>
+		
+<span class="nc" id="L293">		EventHandler&lt;ActionEvent&gt; actionOnAnimationFinished = (ActionEvent) -&gt; {</span>
+			try {
+<span class="nc" id="L295">				start.showMainScene();</span>
+<span class="nc" id="L296">				start.animateMainScene();</span>
+<span class="nc" id="L297">			} catch (IOException e) {</span>
+<span class="nc" id="L298">				start.showError(e, &quot;L'erreur suivante s'est produite pendant le chargement de l'écran du menu principal. Désolé pour le désagrément encouru : &quot;);</span>
+<span class="nc" id="L299">			}</span>
+			
+<span class="nc" id="L301">		};</span>
+<span class="nc" id="L302">		hideSettingsTabPane(0, 1000);</span>
+<span class="nc" id="L303">		hideCancelModificationSettingsButton(500, 1000);</span>
+<span class="nc" id="L304">		hideSaveModificationSettingsButton(1000, 1000, actionOnAnimationFinished);</span>
+<span class="nc" id="L305">	}</span>
+	
+	/**
+	 * Cette méthode est appelé lorsque l'utilisateur appuis sur le bouton &lt;code&gt;cancelModificationSettingsButton&lt;/code&gt;. Elle permet d'annuler les changements des paramètres.
+	 */
+	@FXML
+	private void onCancelModificationSettingsButtonClicked() {
+<span class="nc" id="L312">		Alert alert = new Alert(AlertType.CONFIRMATION);</span>
+<span class="nc" id="L313">		alert.setTitle(Labymany.NAME_APP + &quot; &quot; + Labymany.VERSION_APP);</span>
+<span class="nc" id="L314">		alert.setHeaderText(&quot;Etes-vous sûr de vouloir annuler les modifications ?&quot;);</span>
+<span class="nc" id="L315">		alert.setContentText(&quot;Notez que les modifications seront perdus si vous cliquez sur oui.&quot;);</span>
+<span class="nc" id="L316">		alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);</span>
+<span class="nc" id="L317">		Optional&lt;ButtonType&gt; buttonTypePressed = alert.showAndWait();</span>
+		
+<span class="nc bnc" id="L319" title="All 2 branches missed.">		if (buttonTypePressed.get().equals(ButtonType.YES)) {</span>
+<span class="nc" id="L320">			EventHandler&lt;ActionEvent&gt; actionOnAnimationFinished = (ActionEvent) -&gt; {</span>
+				try {
+<span class="nc" id="L322">					start.showMainScene();</span>
+<span class="nc" id="L323">					start.animateMainScene();</span>
+<span class="nc" id="L324">				} catch (IOException e) {</span>
+<span class="nc" id="L325">					start.showError(e, &quot;L'erreur suivante s'est produite pendant le chargement de l'écran du menu principal. Désolé pour le désagrément encouru : &quot;);</span>
+<span class="nc" id="L326">				}</span>
+				
+<span class="nc" id="L328">			};</span>
+<span class="nc" id="L329">			hideSettingsTabPane(0, 1000);</span>
+<span class="nc" id="L330">			hideCancelModificationSettingsButton(500, 1000);</span>
+<span class="nc" id="L331">			hideSaveModificationSettingsButton(1000, 1000, actionOnAnimationFinished);</span>
+		}
+<span class="nc" id="L333">	}</span>
+	
+	/**
+	 * Cette méthode est appelé lorsque l'utilisateur appuis sur le bouton &lt;code&gt;setKeyPlayUpControlButton&lt;/code&gt;. Elle permet d'enregistrer la nouvelle touche qui déplacera le pion du joueur vers le haut si cette touche n'est pas enregistré pour
+	 * une autre action.
+	 */
+	@FXML
+	private void onSetKeyPlayUpControlButtonClicked() {
+<span class="nc" id="L341">		NativeKeyListener nativeKeyListener = new NativeKeyListener() {</span>
+			
+<span class="nc" id="L343">			boolean capturedControl = false;</span>
+			
+			@Override
+			public void nativeKeyReleased(NativeKeyEvent nativeEvent) {
+<span class="nc" id="L347">				capturedControl = false;</span>
+<span class="nc" id="L348">				KeyboardScreen.removeNativeKeyListener(this);</span>
+<span class="nc" id="L349">			}</span>
+			
+			@Override
+			public void nativeKeyPressed(NativeKeyEvent nativeEvent) {
+<span class="nc bnc" id="L353" title="All 2 branches missed.">				if (!capturedControl) {</span>
+<span class="nc" id="L354">					capturedControl = true;</span>
+<span class="nc" id="L355">					int keyCode = nativeEvent.getKeyCode();</span>
+<span class="nc bnc" id="L356" title="All 2 branches missed.">					if (controlCheckerListSet.contains(keyCode)) {</span>
+<span class="nc" id="L357">						Platform.runLater(() -&gt; {</span>
+<span class="nc" id="L358">							Alert alert = new Alert(AlertType.WARNING);</span>
+<span class="nc" id="L359">							alert.setTitle(Labymany.NAME_APP + &quot; &quot; + Labymany.VERSION_APP);</span>
+<span class="nc" id="L360">							alert.setHeaderText(&quot;Attention, vous essayez d'attribuer la touche &quot;+NativeKeyEvent.getKeyText(keyCode)+ &quot; pour déplacer le pion vers le haut alors que la touche est déjà attribuée pour une autre action.&quot;);</span>
+<span class="nc" id="L361">							alert.setContentText(&quot;Pour éviter tout problème, vous ne pouvez attribuer une touche que pour une action uniquement.&quot;);</span>
+<span class="nc" id="L362">							alert.showAndWait();</span>
+<span class="nc" id="L363">						});</span>
+					} else {
+<span class="nc" id="L365">						controlCheckerListSet.remove(keyPlayUp);</span>
+<span class="nc" id="L366">						keyPlayUp = keyCode;</span>
+<span class="nc" id="L367">						keyPlayUpTextField.setText(NativeKeyEvent.getKeyText(keyPlayUp));</span>
+<span class="nc" id="L368">						controlCheckerListSet.add(keyPlayUp);</span>
+					}
+				}
+<span class="nc" id="L371">			}</span>
+
+			@Override
+<span class="nc" id="L374">			public void nativeKeyTyped(NativeKeyEvent nativeEvent) {}</span>
+		};
+		
+<span class="nc" id="L377">		KeyboardScreen.addNativeKeyListener(nativeKeyListener);</span>
+<span class="nc" id="L378">	}</span>
+	
+	/**
+	 * Cette méthode est appelé lorsque l'utilisateur appuis sur le bouton &lt;code&gt;setKeyPlayRightControlButton&lt;/code&gt;. Elle permet d'enregistrer la nouvelle touche qui déplacera le pion du joueur vers la droite si cette touche n'est pas enregistré
+	 * pour une autre action.
+	 */
+	@FXML
+	private void onSetKeyPlayRightControlButtonClicked() {
+
+<span class="nc" id="L387">		NativeKeyListener nativeKeyListener = new NativeKeyListener() {</span>
+			
+<span class="nc" id="L389">			boolean capturedControl = false;</span>
+			
+			@Override
+			public void nativeKeyReleased(NativeKeyEvent nativeEvent) {
+<span class="nc" id="L393">				capturedControl = false;</span>
+<span class="nc" id="L394">				KeyboardScreen.removeNativeKeyListener(this);</span>
+<span class="nc" id="L395">			}</span>
+			
+			@Override
+			public void nativeKeyPressed(NativeKeyEvent nativeEvent) {
+<span class="nc bnc" id="L399" title="All 2 branches missed.">				if (!capturedControl) {</span>
+<span class="nc" id="L400">					capturedControl = true;</span>
+<span class="nc" id="L401">					int keyCode = nativeEvent.getKeyCode();</span>
+<span class="nc bnc" id="L402" title="All 2 branches missed.">					if (controlCheckerListSet.contains(keyCode)) {</span>
+<span class="nc" id="L403">						Platform.runLater(() -&gt; {</span>
+<span class="nc" id="L404">							Alert alert = new Alert(AlertType.WARNING);</span>
+<span class="nc" id="L405">							alert.setTitle(Labymany.NAME_APP + &quot; &quot; + Labymany.VERSION_APP);</span>
+<span class="nc" id="L406">							alert.setHeaderText(&quot;Attention, vous essayez d'attribuer la touche &quot;+NativeKeyEvent.getKeyText(keyCode)+ &quot; pour déplacer le pion vers la droite alors que la touche est déjà attribuée pour une autre action.&quot;);</span>
+<span class="nc" id="L407">							alert.setContentText(&quot;Pour éviter tout problème, vous ne pouvez attribuer une touche que pour une action uniquement.&quot;);</span>
+<span class="nc" id="L408">							alert.showAndWait();</span>
+<span class="nc" id="L409">						});</span>
+					} else {
+<span class="nc" id="L411">						controlCheckerListSet.remove(keyPlayRight);</span>
+<span class="nc" id="L412">						keyPlayRight = keyCode;</span>
+<span class="nc" id="L413">						keyPlayRightTextField.setText(NativeKeyEvent.getKeyText(keyPlayRight));</span>
+<span class="nc" id="L414">						controlCheckerListSet.add(keyPlayRight);</span>
+					}
+				}
+<span class="nc" id="L417">			}</span>
+
+			@Override
+<span class="nc" id="L420">			public void nativeKeyTyped(NativeKeyEvent nativeEvent) {}</span>
+		};
+		
+<span class="nc" id="L423">		KeyboardScreen.addNativeKeyListener(nativeKeyListener);</span>
+<span class="nc" id="L424">	}</span>
+	
+	/**
+	 * Cette méthode est appelé lorsque l'utilisateur appuis sur le bouton &lt;code&gt;setKeyPlayDownControlButton&lt;/code&gt;. Elle permet d'enregistrer la nouvelle touche qui déplacera le pion du joueur vers le bas si cette touche n'est pas enregsitré pour
+	 * une autre action.
+	 */
+	@FXML
+	private void onSetKeyPlayDownControlButtonClicked() {
+<span class="nc" id="L432">		NativeKeyListener nativeKeyListener = new NativeKeyListener() {</span>
+<span class="nc" id="L433">			boolean capturedControl = false;</span>
+			
+			@Override
+			public void nativeKeyReleased(NativeKeyEvent nativeEvent) {
+<span class="nc" id="L437">				capturedControl = false;</span>
+<span class="nc" id="L438">				KeyboardScreen.removeNativeKeyListener(this);</span>
+<span class="nc" id="L439">			}</span>
+			
+			@Override
+			public void nativeKeyPressed(NativeKeyEvent nativeEvent) {
+<span class="nc bnc" id="L443" title="All 2 branches missed.">				if (!capturedControl) {</span>
+<span class="nc" id="L444">					capturedControl = true;</span>
+<span class="nc" id="L445">					int keyCode = nativeEvent.getKeyCode();</span>
+<span class="nc bnc" id="L446" title="All 2 branches missed.">					if (controlCheckerListSet.contains(keyCode)) {</span>
+<span class="nc" id="L447">						Platform.runLater(() -&gt; {</span>
+<span class="nc" id="L448">							Alert alert = new Alert(AlertType.WARNING);</span>
+<span class="nc" id="L449">							alert.setTitle(Labymany.NAME_APP + &quot; &quot; + Labymany.VERSION_APP);</span>
+<span class="nc" id="L450">							alert.setHeaderText(&quot;Attention, vous essayez d'attribuer la touche &quot;+NativeKeyEvent.getKeyText(keyCode)+ &quot; pour déplacer le pion vers le bas alors que la touche est déjà attribuée pour une autre action.&quot;);</span>
+<span class="nc" id="L451">							alert.setContentText(&quot;Pour éviter tout problème, vous ne pouvez attribuer une touche que pour une action uniquement.&quot;);</span>
+<span class="nc" id="L452">							alert.showAndWait();</span>
+<span class="nc" id="L453">						});</span>
+					} else {
+<span class="nc" id="L455">						controlCheckerListSet.remove(keyPlayDown);</span>
+<span class="nc" id="L456">						keyPlayDown = keyCode;</span>
+<span class="nc" id="L457">						keyPlayDownTextField.setText(NativeKeyEvent.getKeyText(keyPlayDown));</span>
+<span class="nc" id="L458">						controlCheckerListSet.add(keyPlayDown);</span>
+					}
+				}
+<span class="nc" id="L461">			}</span>
+
+			@Override
+<span class="nc" id="L464">			public void nativeKeyTyped(NativeKeyEvent nativeEvent) {}</span>
+		};
+		
+<span class="nc" id="L467">		KeyboardScreen.addNativeKeyListener(nativeKeyListener);</span>
+<span class="nc" id="L468">	}</span>
+	
+	/**
+	 * Cette méthode est appelé lorsque l'utilisateur appuis sur le bouton &lt;code&gt;setKeyPlayLeftControlButton&lt;/code&gt;. Elle permet d'enregistrer la nouvelle touche qui déplacera le pion du joueur vers la droite si cette touche n'est pas enregistré
+	 * pour une autre action.
+	 */
+	@FXML
+	private void onSetKeyPlayLeftControlButtonClicked() {
+<span class="nc" id="L476">		NativeKeyListener nativeKeyListener = new NativeKeyListener() {</span>
+<span class="nc" id="L477">			boolean capturedControl = false;</span>
+			
+			@Override
+			public void nativeKeyReleased(NativeKeyEvent nativeEvent) {
+<span class="nc" id="L481">				capturedControl = false;</span>
+<span class="nc" id="L482">				KeyboardScreen.removeNativeKeyListener(this);</span>
+<span class="nc" id="L483">			}</span>
+			
+			@Override
+			public void nativeKeyPressed(NativeKeyEvent nativeEvent) {
+<span class="nc bnc" id="L487" title="All 2 branches missed.">				if (!capturedControl) {</span>
+<span class="nc" id="L488">					capturedControl = true;</span>
+<span class="nc" id="L489">					int keyCode = nativeEvent.getKeyCode();</span>
+<span class="nc bnc" id="L490" title="All 2 branches missed.">					if (controlCheckerListSet.contains(keyCode)) {</span>
+<span class="nc" id="L491">						Platform.runLater(() -&gt; {</span>
+<span class="nc" id="L492">							Alert alert = new Alert(AlertType.WARNING);</span>
+<span class="nc" id="L493">							alert.setTitle(Labymany.NAME_APP + &quot; &quot; + Labymany.VERSION_APP);</span>
+<span class="nc" id="L494">							alert.setHeaderText(&quot;Attention, vous essayez d'attribuer la touche &quot;+NativeKeyEvent.getKeyText(keyCode)+ &quot; pour déplacer le pion vers la gauche alors que la touche est déjà attribuée pour une autre action.&quot;);</span>
+<span class="nc" id="L495">							alert.setContentText(&quot;Pour éviter tout problème, vous ne pouvez attribuer une touche que pour une action uniquement.&quot;);</span>
+<span class="nc" id="L496">							alert.showAndWait();</span>
+<span class="nc" id="L497">						});</span>
+					} else {
+<span class="nc" id="L499">						controlCheckerListSet.remove(keyPlayRight);</span>
+<span class="nc" id="L500">						keyPlayLeft = keyCode;</span>
+<span class="nc" id="L501">						keyPlayLeftTextField.setText(NativeKeyEvent.getKeyText(keyPlayLeft));</span>
+<span class="nc" id="L502">						controlCheckerListSet.add(keyPlayLeft);</span>
+					}
+				}
+<span class="nc" id="L505">			}</span>
+
+			@Override
+<span class="nc" id="L508">			public void nativeKeyTyped(NativeKeyEvent nativeEvent) {}</span>
+		};
+		
+<span class="nc" id="L511">		KeyboardScreen.addNativeKeyListener(nativeKeyListener);</span>
+<span class="nc" id="L512">	}</span>
+	
+	/**
+	 * Cette méthode est appelé lorsque l'utilisateur appuis sur le bouton &lt;code&gt;setPlayerCursorImageButton&lt;/code&gt;. Elle permet de définir une nouvelle image qui représentera le pion du joueur. Il est déconseillé de mettre la même image que celle 
+	 * représentant l'arrivée.
+	 */
+	@FXML
+	private void onSetPlayerCursorImageButtonClicked() {
+		try {
+<span class="nc" id="L521">			FileChooser fileChooser = new FileChooser();</span>
+<span class="nc" id="L522">			fileChooser.setTitle(Labymany.NAME_APP+ &quot; &quot; + Labymany.VERSION_APP +&quot;- Choisissez une image qui représentera le pion du joueur.&quot;);</span>
+<span class="nc" id="L523">			fileChooser.getExtensionFilters().setAll(new FileChooser.ExtensionFilter(&quot;Fichiers images&quot;, &quot;*.jpg&quot;, &quot;*.bmp&quot;, &quot;*.png&quot;, &quot;*.gif&quot;));</span>
+			
+<span class="nc" id="L525">			File newPlayerCursorImageFile = fileChooser.showOpenDialog(start.getPrimaryStage());</span>
+			
+<span class="nc" id="L527">			Image playerCursorImage = new Image(newPlayerCursorImageFile.toURI().toURL().toString());</span>
+<span class="nc" id="L528">			playerCursorImageView.setImage(playerCursorImage);</span>
+<span class="nc" id="L529">		} catch (MalformedURLException e) {</span>
+<span class="nc" id="L530">			start.showError(e, &quot;L'erreur suivante s'est produite pendant l'enregistrement de la nouvelle image pour le pion du joueur. Désolé pour le désagrément encouru : &quot;);</span>
+<span class="nc" id="L531">		}</span>
+		
+		
+<span class="nc" id="L534">	}</span>
+	
+	/**
+	 * Cette méthode est appelé lorsque l'utilisateur appuis sur le bouton &lt;code&gt;setPlayerWinCursorImageButton&lt;/code&gt;. Elle permet de définir une nouvelle image qui représentera l'arrivée. Il est déconseillé de mettre la même image que celle 
+	 * représentant le pion du joueur.
+	 */
+	@FXML
+	private void onSetPlayerWinCursorImageButtonClicked() {
+
+		try {
+<span class="nc" id="L544">			FileChooser fileChooser = new FileChooser();</span>
+<span class="nc" id="L545">			fileChooser.setTitle(Labymany.NAME_APP+ &quot; &quot; + Labymany.VERSION_APP +&quot;- Choisissez une image qui représentera l'arrivée.&quot;);</span>
+<span class="nc" id="L546">			fileChooser.getExtensionFilters().setAll(new FileChooser.ExtensionFilter(&quot;Fichiers images&quot;, &quot;*.jpg&quot;, &quot;*.bmp&quot;, &quot;*.png&quot;, &quot;*.gif&quot;));</span>
+			
+<span class="nc" id="L548">			File newPlayerWinCursorImageFile = fileChooser.showOpenDialog(start.getPrimaryStage());</span>
+			
+			Image playerWinCursorImage;
+			
+<span class="nc" id="L552">			playerWinCursorImage = new Image(newPlayerWinCursorImageFile.toURI().toURL().toString());</span>
+<span class="nc" id="L553">			playerWinCursorImageView.setImage(playerWinCursorImage);</span>
+<span class="nc" id="L554">		} catch (MalformedURLException e) {</span>
+<span class="nc" id="L555">			start.showError(e, &quot;L'erreur suivante s'est produite pendant l'afichage et l'enrregistrement de la nouvelle image pour l'arrivée. Désolé pour le désagrément encouru : &quot;);</span>
+<span class="nc" id="L556">		}</span>
+		
+<span class="nc" id="L558">	}</span>
+	
+	/**
+	 * Cette méthode est appelé lorsque l'utilisateur appuis sur le bouton &lt;code&gt;setGeneratorCursorImageButton&lt;/code&gt;. Elle permet de définir une nouvelle image qui représentera le curseur de génération durant l'animation de génération (visible
+	 * si le délai entre images de génération est supérieur à 0ms).
+	 */
+	@FXML
+	private void onSetGeneratorCursorImageButtonClicked() {
+		try {
+<span class="nc" id="L567">			FileChooser fileChooser = new FileChooser();</span>
+<span class="nc" id="L568">			fileChooser.setTitle(Labymany.NAME_APP+ &quot; &quot; + Labymany.VERSION_APP +&quot;- Choisissez une image qui représentera le curseur de génération (visible si le délai entre chaque images de génération (animation) est supérieur à 0).&quot;);</span>
+<span class="nc" id="L569">			fileChooser.getExtensionFilters().setAll(new FileChooser.ExtensionFilter(&quot;Fichiers images&quot;, &quot;*.jpg&quot;, &quot;*.bmp&quot;, &quot;*.png&quot;, &quot;*.gif&quot;));</span>
+			
+<span class="nc" id="L571">			File newGeneratorCursorImageFile = fileChooser.showOpenDialog(start.getPrimaryStage());</span>
+			
+<span class="nc" id="L573">			Image generatorCursorImage = new Image(newGeneratorCursorImageFile.toURI().toURL().toString());</span>
+<span class="nc" id="L574">			generatorCursorImageView.setImage(generatorCursorImage);</span>
+<span class="nc" id="L575">		} catch (MalformedURLException e) {</span>
+<span class="nc" id="L576">			start.showError(e, &quot;L'erreur suivante s'est produite pendant l'affichage et l'enregistrement de la nouvelle image pour le curseur de génération. Désolé pour le désagrément encouru : &quot;);</span>
+<span class="nc" id="L577">		}</span>
+		
+<span class="nc" id="L579">	}</span>
+	
+	/**
+		 * Cette méthode déclenche l'animation d'apparition de &lt;code&gt;settingsTabPane&lt;/code&gt;. Cette méthode est équivalent à &lt;code&gt;showSettingsTabPane(double,double,null)&lt;/code&gt;.
+		 * @param delay Délai avant le déclenchement de l'animation.
+		 * @param duration Durée de l'animation.
+		 */
+	public void showSettingsTabPane(double delay, double duration) {
+<span class="nc" id="L587">		showSettingsTabPane(delay, duration, null);</span>
+<span class="nc" id="L588">	}</span>
+
+	/**
+	 * Cette méthode déclenche l'animation d'apparition de &lt;code&gt;settingsTabPane&lt;/code&gt;.
+	 * @param delay Délai avant le déclenchement de l'animation.
+	 * @param duration Durée de l'animation.
+	 * @param eventOnFinished Action à effectuer quand l'animation est terminé.
+	 */
+	public void showSettingsTabPane(double delay, double duration, EventHandler&lt;ActionEvent&gt; eventOnFinished) {
+<span class="nc" id="L597">		Timeline showSettingsTabPaneAnimation = new Timeline(30,</span>
+<span class="nc" id="L598">				new KeyFrame(Duration.ZERO, new KeyValue(settingsTabPane.opacityProperty(), 0.00d)),</span>
+<span class="nc" id="L599">				new KeyFrame(new Duration(duration), new KeyValue(settingsTabPane.opacityProperty(), 1.00d)));</span>
+<span class="nc" id="L600">		showSettingsTabPaneAnimation.setDelay(new Duration(delay));</span>
+<span class="nc bnc" id="L601" title="All 2 branches missed.">		if (eventOnFinished != null) {</span>
+<span class="nc" id="L602">			showSettingsTabPaneAnimation.setOnFinished(eventOnFinished);</span>
+		}
+<span class="nc" id="L604">		showSettingsTabPaneAnimation.play();</span>
+<span class="nc" id="L605">	}</span>
+
+	/**
+	 * Cette méthode déclenche l'animation de disparition de &lt;code&gt;settingsTabPane&lt;/code&gt;. Cette méthode est équivalent à &lt;code&gt;showSettingsTabPane(double,double,null)&lt;/code&gt;.
+	 * @param delay Délai avant le déclenchement de l'animation.
+	 * @param duration Durée de l'animation.
+	 */
+	public void hideSettingsTabPane(double delay, double duration) {
+<span class="nc" id="L613">		hideSettingsTabPane(delay, duration, null);</span>
+<span class="nc" id="L614">	}</span>
+
+	/**
+	 * Cette méthode déclenche l'animation de disparition de &lt;code&gt;settingsTabPane&lt;/code&gt;.
+	 * @param delay Délai avant le déclenchement de l'animation.
+	 * @param duration Durée de l'animation.
+	 * @param eventOnFinished Action à effectuer quand l'animation est terminé.
+	 */
+	public void hideSettingsTabPane(double delay, double duration, EventHandler&lt;ActionEvent&gt; eventOnFinished) {
+<span class="nc" id="L623">		Timeline hideSettingsTabPaneAnimation = new Timeline(30,</span>
+<span class="nc" id="L624">				new KeyFrame(Duration.ZERO, new KeyValue(settingsTabPane.opacityProperty(), 1.00d)),</span>
+<span class="nc" id="L625">				new KeyFrame(new Duration(duration), new KeyValue(settingsTabPane.opacityProperty(), 0.00d)));</span>
+<span class="nc" id="L626">		hideSettingsTabPaneAnimation.setDelay(new Duration(delay));</span>
+<span class="nc bnc" id="L627" title="All 2 branches missed.">		if (eventOnFinished != null) {</span>
+<span class="nc" id="L628">			hideSettingsTabPaneAnimation.setOnFinished(eventOnFinished);</span>
+		}
+<span class="nc" id="L630">		hideSettingsTabPaneAnimation.play();</span>
+<span class="nc" id="L631">	}</span>
+	
+	/**
+		 * Cette méthode déclenche l'animation d'apparition de &lt;code&gt;saveModificationSettingsButton&lt;/code&gt;. Cette méthode est équivalent à &lt;code&gt;showSaveModificationSettingsButton(double,double,null)&lt;/code&gt;.
+		 * @param delay Délai avant le déclenchement de l'animation.
+		 * @param duration Durée de l'animation.
+		 */
+	public void showSaveModificationSettingsButton(double delay, double duration) {
+<span class="nc" id="L639">		showSaveModificationSettingsButton(delay, duration, null);</span>
+<span class="nc" id="L640">	}</span>
+
+	/**
+	 * Cette méthode déclenche l'animation d'apparition de &lt;code&gt;saveModificationSettingsButton&lt;/code&gt;.
+	 * @param delay Délai avant le déclenchement de l'animation.
+	 * @param duration Durée de l'animation.
+	 * @param eventOnFinished Action à effectuer quand l'animation est terminé.
+	 */
+	public void showSaveModificationSettingsButton(double delay, double duration, EventHandler&lt;ActionEvent&gt; eventOnFinished) {
+<span class="nc" id="L649">		Timeline showSaveModificationSettingsButtonAnimation = new Timeline(30,</span>
+<span class="nc" id="L650">				new KeyFrame(Duration.ZERO, new KeyValue(saveModificationSettingsButton.opacityProperty(), 0.00d)),</span>
+<span class="nc" id="L651">				new KeyFrame(new Duration(duration), new KeyValue(saveModificationSettingsButton.opacityProperty(), 1.00d)));</span>
+<span class="nc" id="L652">		showSaveModificationSettingsButtonAnimation.setDelay(new Duration(delay));</span>
+<span class="nc bnc" id="L653" title="All 2 branches missed.">		if (eventOnFinished != null) {</span>
+<span class="nc" id="L654">			showSaveModificationSettingsButtonAnimation.setOnFinished(eventOnFinished);</span>
+		}
+<span class="nc" id="L656">		showSaveModificationSettingsButtonAnimation.play();</span>
+<span class="nc" id="L657">	}</span>
+
+	/**
+	 * Cette méthode déclenche l'animation de disparition de &lt;code&gt;saveModificationSettingsButton&lt;/code&gt;. Cette méthode est équivalent à &lt;code&gt;showSaveModificationSettingsButton(double,double,null)&lt;/code&gt;.
+	 * @param delay Délai avant le déclenchement de l'animation.
+	 * @param duration Durée de l'animation.
+	 */
+	public void hideSaveModificationSettingsButton(double delay, double duration) {
+<span class="nc" id="L665">		hideSaveModificationSettingsButton(delay, duration, null);</span>
+<span class="nc" id="L666">	}</span>
+
+	/**
+	 * Cette méthode déclenche l'animation de disparition de &lt;code&gt;saveModificationSettingsButton&lt;/code&gt;.
+	 * @param delay Délai avant le déclenchement de l'animation.
+	 * @param duration Durée de l'animation.
+	 * @param eventOnFinished Action à effectuer quand l'animation est terminé.
+	 */
+	public void hideSaveModificationSettingsButton(double delay, double duration, EventHandler&lt;ActionEvent&gt; eventOnFinished) {
+<span class="nc" id="L675">		Timeline hideSaveModificationSettingsButtonAnimation = new Timeline(30,</span>
+<span class="nc" id="L676">				new KeyFrame(Duration.ZERO, new KeyValue(saveModificationSettingsButton.opacityProperty(), 1.00d)),</span>
+<span class="nc" id="L677">				new KeyFrame(new Duration(duration), new KeyValue(saveModificationSettingsButton.opacityProperty(), 0.00d)));</span>
+<span class="nc" id="L678">		hideSaveModificationSettingsButtonAnimation.setDelay(new Duration(delay));</span>
+<span class="nc bnc" id="L679" title="All 2 branches missed.">		if (eventOnFinished != null) {</span>
+<span class="nc" id="L680">			hideSaveModificationSettingsButtonAnimation.setOnFinished(eventOnFinished);</span>
+		}
+<span class="nc" id="L682">		hideSaveModificationSettingsButtonAnimation.play();</span>
+<span class="nc" id="L683">	}</span>
+	
+	/**
+		 * Cette méthode déclenche l'animation d'apparition de &lt;code&gt;cancelModificationSettingsButton&lt;/code&gt;. Cette méthode est équivalent à &lt;code&gt;showCancelModificationSettingsButton(double,double,null)&lt;/code&gt;.
+		 * @param delay Délai avant le déclenchement de l'animation.
+		 * @param duration Durée de l'animation.
+		 */
+	public void showCancelModificationSettingsButton(double delay, double duration) {
+<span class="nc" id="L691">		showCancelModificationSettingsButton(delay, duration, null);</span>
+<span class="nc" id="L692">	}</span>
+
+	/**
+	 * Cette méthode déclenche l'animation d'apparition de &lt;code&gt;cancelModificationSettingsButton&lt;/code&gt;.
+	 * @param delay Délai avant le déclenchement de l'animation.
+	 * @param duration Durée de l'animation.
+	 * @param eventOnFinished Action à effectuer quand l'animation est terminé.
+	 */
+	public void showCancelModificationSettingsButton(double delay, double duration, EventHandler&lt;ActionEvent&gt; eventOnFinished) {
+<span class="nc" id="L701">		Timeline showCancelModificationSettingsButtonAnimation = new Timeline(30,</span>
+<span class="nc" id="L702">				new KeyFrame(Duration.ZERO, new KeyValue(cancelModificationSettingsButton.opacityProperty(), 0.00d)),</span>
+<span class="nc" id="L703">				new KeyFrame(new Duration(duration), new KeyValue(cancelModificationSettingsButton.opacityProperty(), 1.00d)));</span>
+<span class="nc" id="L704">		showCancelModificationSettingsButtonAnimation.setDelay(new Duration(delay));</span>
+<span class="nc bnc" id="L705" title="All 2 branches missed.">		if (eventOnFinished != null) {</span>
+<span class="nc" id="L706">			showCancelModificationSettingsButtonAnimation.setOnFinished(eventOnFinished);</span>
+		}
+<span class="nc" id="L708">		showCancelModificationSettingsButtonAnimation.play();</span>
+<span class="nc" id="L709">	}</span>
+
+	/**
+	 * Cette méthode déclenche l'animation de disparition de &lt;code&gt;cancelModificationSettingsButton&lt;/code&gt;. Cette méthode est équivalent à &lt;code&gt;showCancelModificationSettingsButton(double,double,null)&lt;/code&gt;.
+	 * @param delay Délai avant le déclenchement de l'animation.
+	 * @param duration Durée de l'animation.
+	 */
+	public void hideCancelModificationSettingsButton(double delay, double duration) {
+<span class="nc" id="L717">		hideCancelModificationSettingsButton(delay, duration, null);</span>
+<span class="nc" id="L718">	}</span>
+
+	/**
+	 * Cette méthode déclenche l'animation de disparition de &lt;code&gt;cancelModificationSettingsButton&lt;/code&gt;.
+	 * @param delay Délai avant le déclenchement de l'animation.
+	 * @param duration Durée de l'animation.
+	 * @param eventOnFinished Action à effectuer quand l'animation est terminé.
+	 */
+	public void hideCancelModificationSettingsButton(double delay, double duration, EventHandler&lt;ActionEvent&gt; eventOnFinished) {
+<span class="nc" id="L727">		Timeline hideCancelModificationSettingsButtonAnimation = new Timeline(30,</span>
+<span class="nc" id="L728">				new KeyFrame(Duration.ZERO, new KeyValue(cancelModificationSettingsButton.opacityProperty(), 1.00d)),</span>
+<span class="nc" id="L729">				new KeyFrame(new Duration(duration), new KeyValue(cancelModificationSettingsButton.opacityProperty(), 0.00d)));</span>
+<span class="nc" id="L730">		hideCancelModificationSettingsButtonAnimation.setDelay(new Duration(delay));</span>
+<span class="nc bnc" id="L731" title="All 2 branches missed.">		if (eventOnFinished != null) {</span>
+<span class="nc" id="L732">			hideCancelModificationSettingsButtonAnimation.setOnFinished(eventOnFinished);</span>
+		}
+<span class="nc" id="L734">		hideCancelModificationSettingsButtonAnimation.play();</span>
+<span class="nc" id="L735">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

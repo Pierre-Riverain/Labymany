@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Configuration>
+	<Appenders>
+		<Console name="ConsoleSystemOut" target="SYSTEM_OUT">
+			<ThresholdFilter level="ERROR" onMatch="DENY" onMismatch="ACCEPT"/>
+			<PatternLayout Pattern="[%d{DATE} - %location - %threadName - %level] %m %n"/>
+		</Console>
+		<Console name="ConsoleSystemErr" target="SYSTEM_ERR">
+			<ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+			<PatternLayout Pattern="[%d{DATE} - %location - %threadName - %level] %m %n"/>
+		</Console>
+		<RollingFile name="FileHTML" filename="./logs/html/logs.html" filePattern="./logs/html/logs_%d{dd-MM-yyyy}_%d{HH-mm-ss}.html" append="true" createOnDemand="true">
+			<HtmlLayout locationInfo="true"/>
+			<Policies>
+				<OnStartupTriggeringPolicy minSize="0" />
+			</Policies>
+		</RollingFile>
+	</Appenders>
+	<Loggers>
+		<Root level="Debug">
+			<AppenderRef ref="FileHTML"/>
+		</Root>
+	</Loggers>
+</Configuration>

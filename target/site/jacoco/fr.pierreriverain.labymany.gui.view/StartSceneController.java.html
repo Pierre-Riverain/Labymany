@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>StartSceneController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Labymany</a> &gt; <a href="index.source.html" class="el_package">fr.pierreriverain.labymany.gui.view</a> &gt; <span class="el_source">StartSceneController.java</span></div><h1>StartSceneController.java</h1><pre class="source lang-java linenums">package fr.pierreriverain.labymany.gui.view;
+
+
+
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.util.Duration;
+
+/**
+ * Cette classe permet de gérer l'interface graphique de démarrage avec des animations d'apparitions et de disparition sur les composants graphique de cette scène. 
+ * @author Pierre Riverain
+ *
+ */
+public class StartSceneController {
+	
+	/**
+	 * Cet objet représente la vue qui permet d'afficher le logo de Labymany.
+	 */
+	@FXML
+	private ImageView logoView;
+	
+	/**
+	 * Cet objet représente le label qui permet d'afficher le texte de bienvenue.
+	 */
+	@FXML
+	private Label textLabel;
+	
+	public StartSceneController() {
+<span class="nc" id="L36">		super();</span>
+<span class="nc" id="L37">	}</span>
+	
+	/**
+	 * Cette méthode permet d'initialiser l'opacité des composants graphique à 0, ce qui permet de lancer les animations d'apparition dans les bonnes conditions.
+	 */
+	@FXML
+	private void initialize() {
+<span class="nc" id="L44">		logoView.setOpacity(0.00d);</span>
+		
+<span class="nc" id="L46">		textLabel.setOpacity(0.00d);</span>
+<span class="nc" id="L47">	}</span>
+	
+	/**
+	 * Cette méthode déclenche l'animation d'apparition de &lt;code&gt;logoView&lt;/code&gt;. Cette méthode est équivalent à &lt;code&gt;showLogo(double,double,null)&lt;/code&gt;.
+	 * @param delay Délai avant le déclenchement de l'animation en millisecondes.
+	 * @param duration Durée de l'animation en millisecondes.
+	 */
+	public void showLogo(double delay, double duration) {
+<span class="nc" id="L55">		showLogo(delay, duration, null);</span>
+<span class="nc" id="L56">	}</span>
+	
+	/**
+	 * Cette méthode déclenche l'animation d'apparition de &lt;code&gt;logoView&lt;/code&gt;.
+	 * @param delay Délai avant le déclenchement de l'animation en millisecondes.
+	 * @param duration Durée de l'animation en millisecondes.
+	 * @param eventOnFinished Action à effectuer quand l'animation est terminé.
+	 */
+	public void showLogo(double delay, double duration, EventHandler&lt;ActionEvent&gt; eventOnFinished) {
+<span class="nc" id="L65">		Timeline showLogoAnimation = new Timeline(30.00d, new KeyFrame(Duration.ZERO, new KeyValue(logoView.opacityProperty(), 0.00d)), new KeyFrame(new Duration(1000), new KeyValue(logoView.opacityProperty(), 1.00d)));</span>
+<span class="nc" id="L66">		showLogoAnimation.setDelay(new Duration(delay));</span>
+<span class="nc" id="L67">		showLogoAnimation.setRate(1.00d);</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">		if (eventOnFinished != null) {</span>
+<span class="nc" id="L69">			showLogoAnimation.setOnFinished(eventOnFinished);</span>
+		}
+<span class="nc" id="L71">		showLogoAnimation.play();</span>
+<span class="nc" id="L72">	}</span>
+	
+	/**
+	 * Cette méthode déclenche l'animation de disparition de &lt;code&gt;logoView&lt;/code&gt;. Cette méthode est équivalent à &lt;code&gt;hideLogo(double,double,null)&lt;/code&gt;
+	 * @param delay Délai avant le déclenchemenbt de l'animation en millisecondes.
+	 * @param duration Durée de l'animation en millisecondes.
+	 */
+	public void hideLogo(double delay, double duration) {
+<span class="nc" id="L80">		showLogo(delay, duration, null);</span>
+<span class="nc" id="L81">	}</span>
+	
+	/**
+	 * Cette méthode déclenche l'animation de disparition de &lt;code&gt;logoView&lt;/code&gt;.
+	 * @param delay Délai avant le déclenchement de l'animation en millisecondes.
+	 * @param duration Durée de l'animation en millisecondes.
+	 * @param eventOnFinished Action à effectuer quand l'animation est terminé.
+	 */
+	public void hideLogo(double delay, double duration, EventHandler&lt;ActionEvent&gt; eventOnFinished) {
+<span class="nc" id="L90">		Timeline hideLogoAnimation = new Timeline(30.00d, new KeyFrame(Duration.ZERO, new KeyValue(logoView.opacityProperty(), 1.00d)), new KeyFrame(new Duration(1000), new KeyValue(logoView.opacityProperty(), 0.00d)));</span>
+<span class="nc" id="L91">		hideLogoAnimation.setDelay(new Duration(delay));</span>
+<span class="nc" id="L92">		hideLogoAnimation.setRate(1.00d);</span>
+<span class="nc bnc" id="L93" title="All 2 branches missed.">		if (eventOnFinished != null) {</span>
+<span class="nc" id="L94">			hideLogoAnimation.setOnFinished(eventOnFinished);</span>
+		}
+<span class="nc" id="L96">		hideLogoAnimation.play();</span>
+<span class="nc" id="L97">	}</span>
+	
+	/**
+	 * Cette méthode déclenche l'animation d'apparition de &lt;code&gt;textLabel&lt;/code&gt;. Cette méthode est équivalent à &lt;code&gt;showText(double,double,null)&lt;/code&gt;.
+	 * @param delay Délai avant le déclenchement de l'animation en millisecondes.
+	 * @param duration Durée de l'animation en millisecondes.
+	 */
+	public void showText(double delay, double duration) {
+<span class="nc" id="L105">		showText(delay, duration, null);</span>
+<span class="nc" id="L106">	}</span>
+	
+	/**
+	 * Cette méthode déclenche l'animation d'apparition de &lt;code&gt;textLabel&lt;/code&gt;.
+	 * @param delay Délai avant le déclenchement de l'animation en millisecondes.
+	 * @param duration Durée de l'animation en millisecondes.
+	 * @param eventOnFinished Action à effectuer quand l'animation est terminé.
+	 */
+	public void showText(double delay, double duration, EventHandler&lt;ActionEvent&gt; eventOnFinished) {
+<span class="nc" id="L115">		Timeline showTextAnimation = new Timeline(30.00d, new KeyFrame(Duration.ZERO, new KeyValue(textLabel.opacityProperty(), 0.00d)), new KeyFrame(new Duration(1000), new KeyValue(textLabel.opacityProperty(), 1.00d)));</span>
+<span class="nc" id="L116">		showTextAnimation.setDelay(new Duration(delay));</span>
+<span class="nc bnc" id="L117" title="All 2 branches missed.">		if (eventOnFinished != null) {</span>
+<span class="nc" id="L118">			showTextAnimation.setOnFinished(eventOnFinished);</span>
+		}
+<span class="nc" id="L120">		showTextAnimation.play();</span>
+<span class="nc" id="L121">	}</span>
+	
+	/**
+	 * Cette méthode déclenche l'animation de disparition de &lt;code&gt;textLabel&lt;/code&gt;. Cette méthode est équivalent à &lt;code&gt;hideText(double,double,null)&lt;/code&gt;
+	 * @param delay Délai avant le déclenchemenbt de l'animation en millisecondes.
+	 * @param duration Durée de l'animation en millisecondes.
+	 */
+	public void hideText(double delay, double duration) {
+<span class="nc" id="L129">		hideText(delay, duration, null);</span>
+<span class="nc" id="L130">	}</span>
+	
+	/**
+	 * Cette méthode déclenche l'animation de disparition de &lt;code&gt;textLabel&lt;/code&gt;.
+	 * @param delay Délai avant le déclenchement de l'animation en millisecondes.
+	 * @param duration Durée de l'animation en millisecondes.
+	 * @param eventOnFinished Action à effectuer quand l'animation est terminé.
+	 */
+	public void hideText(double delay, double duration, EventHandler&lt;ActionEvent&gt; eventOnFinished) {
+<span class="nc" id="L139">		Timeline hideTextAnimation = new Timeline(30.00d, new KeyFrame(Duration.ZERO, new KeyValue(textLabel.opacityProperty(), 1.00d)), new KeyFrame(new Duration(1000), new KeyValue(textLabel.opacityProperty(), 0.00d)));</span>
+<span class="nc" id="L140">		hideTextAnimation.setDelay(new Duration(delay));</span>
+<span class="nc bnc" id="L141" title="All 2 branches missed.">		if (eventOnFinished != null) {</span>
+<span class="nc" id="L142">			hideTextAnimation.setOnFinished(eventOnFinished);</span>
+		}
+<span class="nc" id="L144">		hideTextAnimation.play();</span>
+<span class="nc" id="L145">	}</span>
+
+	/**
+	 * Ce muttateur permet de définir un logo à la scène.
+	 * @param logo Le logo à définir.
+	 */
+	public final void setLogo(Image logo) {
+<span class="nc" id="L152">		logoView.setImage(logo);</span>
+<span class="nc" id="L153">	}</span>
+
+	/**
+	 * Cet accesseur permet d'obtenir le logo qui à été défini avec &lt;code&gt;setLogo(Image)&lt;/code&gt;.
+	 * @return Le logo défini.
+	 */
+	public final Image getLogo() {
+<span class="nc" id="L160">		return logoView.getImage();</span>
+	}
+
+	/**
+	 * Ce muttateur permet de définir le texte de bienvenue.
+	 * @param value Le texte de bienvenue.
+	 */
+	public final void setText(String value) {
+<span class="nc" id="L168">		textLabel.setText(value);</span>
+<span class="nc" id="L169">	}</span>
+
+	/**
+	 * Cet accesseur permet d'obtenir le message de bienvenue.
+	 * @return Le message de bienvenue.
+	 */
+	public final String getText() {
+<span class="nc" id="L176">		return textLabel.getText();</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

@@ -1,0 +1,48 @@
+# Created at 2021-06-25T12:26:16.490
+java.util.ServiceConfigurationError: Locale provider adapter "CLDR"cannot be instantiated.
+	at java.base/sun.util.locale.provider.LocaleProviderAdapter.forType(LocaleProviderAdapter.java:199)
+	at java.base/sun.util.locale.provider.LocaleProviderAdapter.findAdapter(LocaleProviderAdapter.java:287)
+	at java.base/sun.util.locale.provider.LocaleProviderAdapter.getAdapter(LocaleProviderAdapter.java:258)
+	at java.base/java.util.Calendar.createCalendar(Calendar.java:1693)
+	at java.base/java.util.Calendar.getInstance(Calendar.java:1661)
+	at java.base/java.text.SimpleDateFormat.initializeCalendar(SimpleDateFormat.java:677)
+	at java.base/java.text.SimpleDateFormat.<init>(SimpleDateFormat.java:621)
+	at java.base/java.text.SimpleDateFormat.<init>(SimpleDateFormat.java:600)
+	at org.apache.maven.surefire.booter.PpidChecker.createWindowsCreationDateFormat(PpidChecker.java:363)
+	at org.apache.maven.surefire.booter.PpidChecker.<clinit>(PpidChecker.java:67)
+	at org.apache.maven.surefire.booter.ForkedBooter.listenToShutdownCommands(ForkedBooter.java:244)
+	at org.apache.maven.surefire.booter.ForkedBooter.setupBooter(ForkedBooter.java:136)
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:561)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:548)
+Caused by: java.lang.reflect.InvocationTargetException
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:78)
+	at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:480)
+	at java.base/sun.util.locale.provider.LocaleProviderAdapter.forType(LocaleProviderAdapter.java:188)
+	... 13 more
+Caused by: java.util.ServiceConfigurationError: sun.util.locale.provider.LocaleDataMetaInfo: Unable to load sun.util.resources.cldr.provider.CLDRLocaleDataMetaInfo
+	at java.base/java.util.ServiceLoader.fail(ServiceLoader.java:582)
+	at java.base/java.util.ServiceLoader.loadProvider(ServiceLoader.java:854)
+	at java.base/java.util.ServiceLoader$ModuleServicesLookupIterator.hasNext(ServiceLoader.java:1076)
+	at java.base/java.util.ServiceLoader$2.hasNext(ServiceLoader.java:1299)
+	at java.base/java.util.ServiceLoader$3.hasNext(ServiceLoader.java:1383)
+	at java.base/sun.util.cldr.CLDRLocaleProviderAdapter$1.run(CLDRLocaleProviderAdapter.java:89)
+	at java.base/sun.util.cldr.CLDRLocaleProviderAdapter$1.run(CLDRLocaleProviderAdapter.java:86)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:554)
+	at java.base/sun.util.cldr.CLDRLocaleProviderAdapter.<init>(CLDRLocaleProviderAdapter.java:86)
+	... 19 more
+Caused by: java.lang.LinkageError: loader 'platform' attempted duplicate class definition for sun.util.resources.cldr.provider.CLDRLocaleDataMetaInfo. (sun.util.resources.cldr.provider.CLDRLocaleDataMetaInfo is in module jdk.localedata of loader 'platform')
+	at java.base/java.lang.ClassLoader.defineClass2(Native Method)
+	at java.base/java.lang.ClassLoader.defineClass(ClassLoader.java:1101)
+	at java.base/java.security.SecureClassLoader.defineClass(SecureClassLoader.java:182)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.defineClass(BuiltinClassLoader.java:814)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.findClassInModuleOrNull(BuiltinClassLoader.java:735)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.findClass(BuiltinClassLoader.java:616)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:631)
+	at java.base/java.lang.Class.forName(Class.java:543)
+	at java.base/java.util.ServiceLoader.loadProvider(ServiceLoader.java:852)
+	... 26 more
+
+

@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MazePictureGenerator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Labymany</a> &gt; <a href="index.source.html" class="el_package">fr.pierreriverain.maze</a> &gt; <span class="el_source">MazePictureGenerator.java</span></div><h1>MazePictureGenerator.java</h1><pre class="source lang-java linenums">package fr.pierreriverain.maze;
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.Serializable;
+import java.util.ArrayList;
+
+/**
+ * Cette classe permet de convertir un labyrinthe en image.
+ * @author Pierre Riverain
+ *
+ */
+public class MazePictureGenerator implements Serializable, Cloneable {
+
+	/**
+	 * Cet objet représente le labyrinthe qui doit être converti en image.
+	 */
+<span class="nc" id="L19">	private Maze maze = null;</span>
+	
+	/**
+	 * Cet entier indique la taille des cellules sur l'axe X.
+	 */
+<span class="nc" id="L24">	private int cellSizeX = 8;</span>
+	
+	/**
+	 * Cet entier indique la taille des cellules sur l'axe Y.
+	 */
+<span class="nc" id="L29">	private int cellSizeY = 8;</span>
+	
+	/**
+	 * Cet entier indique l'épaisseur des murs sur l'axe X.
+	 */
+<span class="nc" id="L34">	private int wallSizeX = 2;</span>
+	
+	/**
+	 * Cet entier indique l'épaisseur des murs sur l'axe Y.
+	 */
+<span class="nc" id="L39">	private int wallSizeY = 2;</span>
+	
+	/**
+	 * Cet objet représente la couleur de l'arrière plan du labyrinthe.
+	 */
+<span class="nc" id="L44">	private Color backgroundColor = null;</span>
+	
+	/**
+	 * Cet objet représente la couleur des mur du labyrinthe.
+	 */
+<span class="nc" id="L49">	private Color wallsColor = null;</span>
+	
+	/**
+	 * Cette collection contient tous les curseurs qui doivent être dessiné.
+	 */
+<span class="nc" id="L54">	private ArrayList&lt;MazeCursor&gt; listOfMazeCursors = null;</span>
+	
+	/**
+	 * Ce constructeur initialise &lt;code&gt;listOfMazeCursors&lt;/code&gt;.
+	 */
+	public MazePictureGenerator() {
+<span class="nc" id="L60">		super();</span>
+		
+<span class="nc" id="L62">		listOfMazeCursors = new ArrayList&lt;MazeCursor&gt;();</span>
+<span class="nc" id="L63">	}</span>
+
+	/**
+	 * Cet accesseur permet d'obtenir le labyrinthe à convertir en image.
+	 * @return Le labyrinthe à convertir en image.
+	 */
+	public synchronized Maze getMaze() {
+<span class="nc" id="L70">		return maze;</span>
+	}
+
+	/**
+	 * Ce muttateur permet de définir le labyrinthe à convertir en image.
+	 * @param maze Le labyrinthe à convertir en image.
+	 */
+	public synchronized void setMaze(Maze maze) {
+<span class="nc" id="L78">		this.maze = maze;</span>
+<span class="nc" id="L79">	}</span>
+
+	/**
+	 * Cet accesseur permet d'obtenir la taille des cellules du labyrinthe sur l'axe X.
+	 * @return La taille des cellules du labyrinthe sur l'axe X.
+	 */
+	public synchronized int getCellSizeX() {
+<span class="nc" id="L86">		return cellSizeX;</span>
+	}
+
+	/**
+	 * Ce muttateur permet de définir la taille des cellules du labyrinthe sur l'axe X.
+	 * @param cellSizeX La taille des cellules du labyrinthe sur l'axe X.
+	 */
+	public synchronized void setCellSizeX(int cellSizeX) {
+<span class="nc" id="L94">		this.cellSizeX = cellSizeX;</span>
+<span class="nc" id="L95">	}</span>
+
+	/**
+	 * Cet accesseur permet de définir la taille des cellules du labyrinthe sur l'axe Y.
+	 * @return La taille des cellules du labyrinthe sur l'axe Y.
+	 */
+	public synchronized int getCellSizeY() {
+<span class="nc" id="L102">		return cellSizeY;</span>
+	}
+
+	/**
+	 * Ce muttateur permet de définir la taille des cellules du labyrinthe sur l'axe Y.
+	 * @param cellSizeY La taille des cellules du labyrinthe sur l'axe Y.
+	 */
+	public synchronized void setCellSizeY(int cellSizeY) {
+<span class="nc" id="L110">		this.cellSizeY = cellSizeY;</span>
+<span class="nc" id="L111">	}</span>
+
+	/**
+	 * Cet accesseur permet d'obtenir l'épaisseur des murs du labyrinthe sur l'axe X.
+	 * @return the wallSize L'épaisseur des murs du labyrinthe sur l'axe X.
+	 */
+	public synchronized int getWallSizeX() {
+<span class="nc" id="L118">		return wallSizeX;</span>
+	}
+
+	/**
+	 * Ce muttateur permet de définir l'épaisseur des murs du labyrinthe sur l'axe X.
+	 * @param wallSizeX L'épaisseur des murs du labyrinthe sur l'axe X.
+	 */
+	public synchronized void setWallSizeX(int wallSizeX) {
+<span class="nc" id="L126">		this.wallSizeX = wallSizeX;</span>
+<span class="nc" id="L127">	}</span>
+	
+	/**
+	 * Cet accesseur permet d'obtenir l'épaisseur des murs du labyrinthe sur l'axe Y.
+	 * @return the wallSize L'épaisseur des murs du labyrinthe sur l'axe Y.
+	 */
+	public synchronized int getWallSizeY() {
+<span class="nc" id="L134">		return wallSizeY;</span>
+	}
+
+	/**
+	 * Ce muttateur permet de définir l'épaisseur des murs du labyrinthe sur l'axe Y.
+	 * @param wallSizeY L'épaisseur des murs du labyrinthe sur l'axe Y.
+	 */
+	public synchronized void setWallSizeY(int wallSizeY) {
+<span class="nc" id="L142">		this.wallSizeY = wallSizeY;</span>
+<span class="nc" id="L143">	}</span>
+
+	/**
+	 * Cet accesseur permet d'obtenir la couleur de l'arrière plan du labyrinthe.
+	 * @return La couleur de l'arrière plan du labyrinthe.
+	 */
+	public synchronized Color getBackgroudColor() {
+<span class="nc" id="L150">		return backgroundColor;</span>
+	}
+
+	/**
+	 * Ce muttateur permet de définir la couleur de l'arière plan du labyrinthe.
+	 * @param backgroudColor La couleur de l'arrière plan du labyrinthe.
+	 */
+	public synchronized void setBackgroudColor(Color backgroudColor) {
+<span class="nc" id="L158">		this.backgroundColor = backgroudColor;</span>
+<span class="nc" id="L159">	}</span>
+
+	/**
+	 * Cet accesseur permet d'obtenir la couleur des murs du labyrinthe.
+	 * @return La couleur des murs du labyrinthe.
+	 */
+	public synchronized Color getWallsColor() {
+<span class="nc" id="L166">		return wallsColor;</span>
+	}
+
+	/**
+	 * Ce muttateur permet de définir la couleur des murs du labyrinthe.
+	 * @param wallsColor La couleur des murs du labyrinthe.
+	 */
+	public synchronized void setWallsColor(Color wallsColor) {
+<span class="nc" id="L174">		this.wallsColor = wallsColor;</span>
+<span class="nc" id="L175">	}</span>
+
+	/**
+	 * Cet accesseur permet d'obtenir la liste des curseurs à dessiner sur l'image.
+	 * @return La liste des curseurs à dessiner sur l'image.
+	 */
+	public synchronized ArrayList&lt;MazeCursor&gt; getListOfMazeCursors() {
+<span class="nc" id="L182">		return listOfMazeCursors;</span>
+	}
+
+	/**
+	 * Ce muttateur permet de définir une nouvelle liste des curseur à dessiner sur l'image.
+	 * @param listOfMazeCursors the listOfMazeCursors to set
+	 */
+	public synchronized void setListOfMazeCursors(ArrayList&lt;MazeCursor&gt; listOfMazeCursors) {
+<span class="nc" id="L190">		this.listOfMazeCursors = listOfMazeCursors;</span>
+<span class="nc" id="L191">	}</span>
+
+	/**
+	 * Cette méthode permet de générer l'image du labyrinthe.
+	 * @return L'image du labyrinthe générée.
+	 */
+	public synchronized BufferedImage generateMazePicture() {
+		
+<span class="nc" id="L199">		BufferedImage mazeImage = new BufferedImage(cellSizeX * maze.getMazeCells().length, cellSizeY * maze.getMazeCells()[0].length, BufferedImage.TYPE_INT_ARGB);</span>
+<span class="nc" id="L200">		Graphics mazeImageGraphics = mazeImage.getGraphics();</span>
+		
+<span class="nc" id="L202">		mazeImageGraphics.setColor(backgroundColor);</span>
+<span class="nc" id="L203">		mazeImageGraphics.fillRect(0, 0, mazeImage.getWidth(), mazeImage.getHeight());</span>
+		
+<span class="nc" id="L205">		mazeImageGraphics.setColor(wallsColor);</span>
+		
+		int x;
+		int y;
+		int x2;
+		int y2;
+		
+<span class="nc bnc" id="L212" title="All 2 branches missed.">		for (MazeCell[] mazeRowCells : maze.getMazeCells()) {</span>
+<span class="nc bnc" id="L213" title="All 2 branches missed.">			for (MazeCell cell : mazeRowCells) {</span>
+<span class="nc bnc" id="L214" title="All 2 branches missed.">				if (cell.isEnabled()) {</span>
+					
+<span class="nc" id="L216">					x = (cell.getColumnIndex() * cellSizeX) - (wallSizeX / 2);</span>
+<span class="nc" id="L217">					y = (cell.getRowIndex() * cellSizeY) - (wallSizeY / 2);</span>
+<span class="nc" id="L218">					x2 = (cell.getColumnIndex() * cellSizeX + cellSizeX) - (wallSizeX / 2);</span>
+<span class="nc" id="L219">					y2 = (cell.getRowIndex() * cellSizeY + cellSizeY) - (wallSizeY / 2);</span>
+					
+<span class="nc" id="L221">					mazeImageGraphics.fillRect(x, y, wallSizeX, wallSizeY);</span>
+<span class="nc" id="L222">					mazeImageGraphics.fillRect(x2, y, wallSizeX, wallSizeY);</span>
+<span class="nc" id="L223">					mazeImageGraphics.fillRect(x, y2, wallSizeX, wallSizeY);</span>
+<span class="nc" id="L224">					mazeImageGraphics.fillRect(x2, y2, wallSizeX, wallSizeY);</span>
+					
+<span class="nc bnc" id="L226" title="All 2 branches missed.">					boolean mazeCellDoorNorthClosed = !cell.getDoorsOpened().contains(MazeCellDoor.NORTH);</span>
+<span class="nc bnc" id="L227" title="All 2 branches missed.">					boolean mazeCellDoorEastClosed = !cell.getDoorsOpened().contains(MazeCellDoor.EAST);</span>
+<span class="nc bnc" id="L228" title="All 2 branches missed.">					boolean mazeCellDoorSouthClosed = !cell.getDoorsOpened().contains(MazeCellDoor.SOUTH);</span>
+<span class="nc bnc" id="L229" title="All 2 branches missed.">					boolean mazeCellDoorWestClosed = !cell.getDoorsOpened().contains(MazeCellDoor.WEST);</span>
+					
+<span class="nc bnc" id="L231" title="All 2 branches missed.">					if (mazeCellDoorWestClosed) {</span>
+<span class="nc" id="L232">						mazeImageGraphics.fillRect(x, y, wallSizeX, cellSizeY);</span>
+					}
+<span class="nc bnc" id="L234" title="All 2 branches missed.">					if (mazeCellDoorNorthClosed) {</span>
+<span class="nc" id="L235">						mazeImageGraphics.fillRect(x, y, cellSizeX, wallSizeY);</span>
+					}
+<span class="nc bnc" id="L237" title="All 2 branches missed.">					if (mazeCellDoorEastClosed) {</span>
+<span class="nc" id="L238">						mazeImageGraphics.fillRect(x2, y, wallSizeX, cellSizeY);</span>
+					}
+<span class="nc bnc" id="L240" title="All 2 branches missed.">					if (mazeCellDoorSouthClosed) {</span>
+<span class="nc" id="L241">						mazeImageGraphics.fillRect(x, y2, cellSizeX, wallSizeY);</span>
+					}
+				}
+			}
+		}
+<span class="nc bnc" id="L246" title="All 2 branches missed.">		for (MazeCursor mazeCursor : listOfMazeCursors) {</span>
+<span class="nc" id="L247">			mazeImageGraphics.drawImage(mazeCursor.getMazeCursorPicture(), (mazeCursor.getMazeCursorPosX() * cellSizeX) + (wallSizeX / 2), (mazeCursor.getMazeCursorPosY() * cellSizeY) + (wallSizeY / 2), cellSizeX - wallSizeX, cellSizeY - wallSizeY, null);</span>
+<span class="nc" id="L248">		}</span>
+		
+<span class="nc" id="L250">		return mazeImage;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

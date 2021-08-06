@@ -1,0 +1,547 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Labymany.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Labymany</a> &gt; <a href="index.source.html" class="el_package">fr.pierreriverain.labymany</a> &gt; <span class="el_source">Labymany.java</span></div><h1>Labymany.java</h1><pre class="source lang-java linenums">package fr.pierreriverain.labymany;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.net.URL;
+import java.time.LocalDateTime;
+import org.jnativehook.NativeHookException;
+
+import fr.pierreriverain.keyboard.KeyboardScreen;
+import fr.pierreriverain.keyboard.PlayerControls;
+import fr.pierreriverain.labymany.gui.view.MainSceneController;
+import fr.pierreriverain.labymany.gui.view.PlaySceneController;
+import fr.pierreriverain.labymany.gui.view.SelectDifficultySceneController;
+import fr.pierreriverain.labymany.gui.view.SettingsSceneController;
+import fr.pierreriverain.labymany.gui.view.StartSceneController;
+import fr.pierreriverain.labymany.gui.view.TutorialOfTheGameSceneController;
+import fr.pierreriverain.labymany.gui.view.WinMenuSceneController;
+import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.TextArea;
+import javafx.scene.image.Image;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Region;
+import javafx.stage.Stage;
+
+/**
+ * Cette classe est la classe de démarrage de l'application. Elle permet de gérer la fenêtre principale et les scènes qu'elle affiche.
+ * @author Pierre Riverain
+ *
+ */
+public class Labymany extends Application {
+
+	/**
+	 * Cette constante contient le nom de l'application.
+	 */
+	public static final String NAME_APP = &quot;Labymany&quot;;
+	
+	/**
+	 * Cette constante contient la version de l'application.
+	 */
+	public static final String VERSION_APP = &quot;1.0.0&quot;;
+	
+	/**
+	 * Cet objet représente la fenêtre de l'application.
+	 */
+	private Stage primaryStage;
+	
+	/**
+	 * Cet objet permet de gérer l'interface du démarrage. 
+	 */
+	private StartSceneController startSceneController;
+	
+	/**
+	 * Cet objet permet de gérer l'interface du menu principal.
+	 */
+	private MainSceneController mainSceneController;
+	
+	/**
+	 * Cet objet permet de gérer l'interface permettant au joueur de choisir la difficulté du jeu.
+	 */
+	private SelectDifficultySceneController selectDifficultySceneController;
+	
+	/**
+	 * Cet objet permet de gérer l'interface du jeu.
+	 */
+	private PlaySceneController playSceneController;
+	
+	/**
+	 * Cet objet permet de gérer l'interface permettant de modifier les paramètres.
+	 */
+	private SettingsSceneController settingsSceneController;
+	
+	/**
+	 * Cet objet permet de gérer l'interface qui indique au joueur qu'il à résolu le labyrinthe et qui lui propose de rejouer une partie ou de revenir sur le menu principal.
+	 */
+	private WinMenuSceneController winMenuSceneController;
+	
+	/**
+	 * Cet objet permet de gérer l'interface qui affiche le tutoriel du jeu.
+	 */
+	private TutorialOfTheGameSceneController tutorialOfTheGameSceneController;
+	
+	/**
+	 * Cet objet contient le logo de l'application.
+	 */
+	private Image logo;
+	
+	/**
+	 * Cet objet contient les paramètres de l'application.
+	 */
+<span class="nc" id="L101">	private volatile Settings settings = new Settings();</span>
+	
+	/**
+	 * Ce double permet de contenir la largeur de la scène. Il permet de garder la même largeur quand il y a un changement de scène.
+	 */
+<span class="nc" id="L106">	private double sceneWidth = 960;</span>
+	
+	/**
+	 * Ce double permet de contenir la hauteur de la scène. Il permet de garder la même hauteur quand il y a un changement de scène.
+	 */
+<span class="nc" id="L111">	private double sceneHeight = 540;</span>
+	
+	public Labymany() {
+<span class="nc" id="L114">		super();</span>
+<span class="nc" id="L115">	}</span>
+	
+	/**
+	 * Cet accesseur permet d'obtenir l'instace de la fenêtre du jeu.
+	 * @return {@link PlayerControls}
+	 */
+	public Stage getPrimaryStage() {
+<span class="nc" id="L122">		return primaryStage;</span>
+	}
+	
+	/**
+	 * Cet accesseur permet d'obtenir le logo de Labymany. 
+	 * @return Le logo du jeu.
+	 */
+	public Image getLogo() {
+<span class="nc" id="L130">		return logo;</span>
+	}
+
+	/**
+	 * Cet accesseur permet d'obtenir les paramètres actuel de l'application.
+	 * @return Les paramètres actuel de l'application.
+	 */
+	public Settings getSettings() {
+<span class="nc" id="L138">		return settings;</span>
+	}
+
+	/**
+	 * Ce muttateur permet de définir des nouveaux paramètres pour l'application?
+	 * @param settings Les nouveaux paramètres de l'application.
+	 */
+	public void setSettings(Settings settings) {
+<span class="nc" id="L146">		this.settings = settings;</span>
+<span class="nc" id="L147">	}</span>
+
+
+	public static void LaunchInstance(String... args) {
+<span class="nc" id="L151">		launch(args);</span>
+<span class="nc" id="L152">	}</span>
+
+	/**
+	 * Cette méthode est la méthode de démarrage de l'application. Elle charge la scène &lt;code&gt;StartScene&lt;/code&gt; en animation puis
+	 * elle charge la scène &lt;code&gt;MainScene&lt;/code&gt; en animation.
+	 */
+	@Override
+	public void start(Stage primaryStage) {
+		try {
+<span class="nc" id="L161">			KeyboardScreen.registerNativeHook();</span>
+<span class="nc" id="L162">		} catch (NativeHookException e1) {</span>
+<span class="nc" id="L163">			showError(e1, &quot;L'erreur suivante s'est produite pendant le démarrage de l'écoute des évènements claviers. Désolé pour le désagrément encouru : &quot;);</span>
+<span class="nc" id="L164">		}</span>
+<span class="nc bnc" id="L165" title="All 2 branches missed.">		if (new File(&quot;labymany.settings&quot;).exists()) {</span>
+			try {
+<span class="nc" id="L167">				ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(new File(&quot;labymany.settings&quot;))));</span>
+<span class="nc" id="L168">				settings = (Settings) ois.readObject();</span>
+<span class="nc" id="L169">				ois.close();</span>
+<span class="nc" id="L170">			} catch (IOException e) {</span>
+<span class="nc" id="L171">				showError(e, &quot;L'erreur suivante s'est produite pendant la lecture des paramètres, il est donc impossible de les charger. Ceux par défaut seront chargé. Désolé pour le désagrément encouru : &quot;);</span>
+<span class="nc" id="L172">			} catch (ClassNotFoundException e) {</span>
+<span class="nc" id="L173">				showError(e, &quot;L'erreur suivante s'est produite pendant la lecture des paramètres, il est donc impossible de les charger. Ceux par défaut seront chargé. Désolé pour le désagrément encouru : &quot;);</span>
+<span class="nc" id="L174">			}</span>
+		}
+		
+<span class="nc" id="L177">		settings.loadPictures();</span>
+		
+		try {
+<span class="nc" id="L180">			primaryStage.setTitle(NAME_APP + &quot; &quot; + VERSION_APP);</span>
+<span class="nc" id="L181">			URL url = Labymany.class.getResource(&quot;gui/pictures/logo_labymany.png&quot;);</span>
+<span class="nc" id="L182">			logo = new Image(url.toString());</span>
+			
+<span class="nc" id="L184">			this.primaryStage = primaryStage;</span>
+			
+<span class="nc" id="L186">			showStartScene();</span>
+<span class="nc" id="L187">			this.primaryStage.show();</span>
+		
+<span class="nc" id="L189">			animateStartScene((actionEvent) -&gt; {</span>
+				try {
+<span class="nc" id="L191">					showMainScene();</span>
+<span class="nc" id="L192">					animateMainScene();</span>
+<span class="nc" id="L193">				} catch (IOException e) {</span>
+<span class="nc" id="L194">					appShutdownFollowingAnInternalerror(e);</span>
+<span class="nc" id="L195">				}</span>
+<span class="nc" id="L196">			});</span>
+<span class="nc" id="L197">		} catch (Exception e) {</span>
+<span class="nc" id="L198">			appShutdownFollowingAnInternalerror(e);</span>
+<span class="nc" id="L199">		}</span>
+<span class="nc" id="L200">	}</span>
+	
+	/**
+	 * Cette méthode est appelé lorsque labymany s'arrête. Elle permet d'arrêter l'écoute des évenements claviers et souris si cette écoute est activé.
+	 */
+	@Override
+	public void stop() throws Exception {
+<span class="nc" id="L207">		KeyboardScreen.unregisterNativeHook();</span>
+<span class="nc" id="L208">		super.stop();</span>
+<span class="nc" id="L209">	}</span>
+
+	/**
+	 * Cette méthode permet d'initialiser la taille de la région passé en paramètre
+	 * @param region la région où il faut initialiser la taille.
+	 */
+	private void initialiseRegionSize(Region region) {
+<span class="nc" id="L216">		region.setPrefWidth(sceneWidth);</span>
+<span class="nc" id="L217">		region.setPrefHeight(sceneHeight);</span>
+<span class="nc" id="L218">		region.widthProperty().addListener((observable, oldValue, newValue) -&gt; {</span>
+<span class="nc" id="L219">			sceneWidth = newValue.doubleValue();</span>
+<span class="nc" id="L220">		});</span>
+<span class="nc" id="L221">		region.heightProperty().addListener((observable, oldValue, newValue) -&gt; {</span>
+<span class="nc" id="L222">			sceneHeight = newValue.doubleValue();</span>
+<span class="nc" id="L223">		});</span>
+<span class="nc" id="L224">	}</span>
+	
+	/**
+	 * Cette méthode permet d'afficher une boite de dialogue lorsqu'une &lt;code&gt;Exception&lt;/code&gt; est levée avec un message d'erreur et l'exception levée.
+	 * @param e l'exception levée.
+	 * @param message Un message d'erreur à afficher.
+	 */
+	public static void showError(Exception e, String message) {
+<span class="nc" id="L232">		StringWriter stringWriter = new StringWriter();</span>
+<span class="nc" id="L233">		PrintWriter printWriter = new PrintWriter(stringWriter);</span>
+<span class="nc" id="L234">		e.printStackTrace(printWriter);</span>
+<span class="nc" id="L235">		TextArea textArea = new TextArea(stringWriter.toString());</span>
+<span class="nc" id="L236">		textArea.setEditable(false);</span>
+		
+<span class="nc" id="L238">		Alert alert = new Alert(AlertType.ERROR);</span>
+<span class="nc" id="L239">		alert.setTitle(NAME_APP + &quot; &quot; + VERSION_APP);</span>
+<span class="nc" id="L240">		alert.setHeaderText(message);</span>
+<span class="nc" id="L241">		alert.getDialogPane().setContent(textArea);</span>
+<span class="nc" id="L242">		alert.showAndWait();</span>
+<span class="nc" id="L243">	}</span>
+	
+	/**
+	 * Cette méthode est appelé lorsqu'une exception est levée lors du démarrage. Elle affiche l'erreur dans une boite de dialogue avec un message d'erreur et l'exception à l'aide de la méthode &lt;code&gt;showError(e, message)&lt;/code&gt;, 
+	 * puis arrête l'application.
+	 * @param e L'exception qui à été levée.
+	 */
+	private void appShutdownFollowingAnInternalerror(Exception e) {
+<span class="nc" id="L251">		showError(e, &quot;L'erreur suivante s'est produite pendant le démarrage de Labymany, le jeu doit s'arrêter. Désolé pour le désagrément encouru : &quot;);</span>
+		
+<span class="nc" id="L253">		primaryStage.hide();</span>
+<span class="nc" id="L254">		System.exit(1);</span>
+<span class="nc" id="L255">	}</span>
+	
+	//------------------------- Partie concernant l'interface du démarrage -------------------------
+	
+	/**
+	 * Cet accesseur permet d'obtenir l'instance de la classe qui permet de gérer l'interface du démarrage.
+	 * @return &lt;code&gt;startSceneController&lt;/code&gt;.
+	 */
+	public StartSceneController getStartSceneController() {
+<span class="nc" id="L264">		return startSceneController;</span>
+	}
+	
+	/**
+	 * Cette méthode déclenche l'animation d'apparition et de disparition de l'interface du démarrage. 
+	 * @param eventOnFinished Action à éffectuer à la fin de l'animation.
+	 */
+	public void animateStartScene(EventHandler&lt;ActionEvent&gt; eventOnFinished) {
+<span class="nc" id="L272">		startSceneController.showLogo(0, 1000);</span>
+		
+<span class="nc" id="L274">		int hour = LocalDateTime.now().getHour();</span>
+		
+<span class="nc bnc" id="L276" title="All 2 branches missed.">		if (hour &lt; 17) {</span>
+<span class="nc" id="L277">			startSceneController.setText(&quot;Bonjour&quot;);</span>
+		} else {
+<span class="nc" id="L279">			startSceneController.setText(&quot;Bonsoir&quot;);</span>
+		}
+<span class="nc" id="L281">		startSceneController.showText(1000, 1000);</span>
+<span class="nc" id="L282">		startSceneController.hideText(3000, 1000, (actionEvent) -&gt; {</span>
+<span class="nc" id="L283">			startSceneController.setText(&quot;Bienvenue !&quot;);</span>
+<span class="nc" id="L284">		});</span>
+		
+<span class="nc" id="L286">		startSceneController.showText(5000, 1000);</span>
+<span class="nc" id="L287">		startSceneController.hideText(7000, 1000, eventOnFinished);</span>
+<span class="nc" id="L288">	}</span>
+	
+	/**
+	 * Cette méthode charge l'interface du démarrage.
+	 * @throws IOException Cette exception est levée si une erreur s'est produite pendant le chargement de l'interface .
+	 */
+	public void showStartScene() throws IOException {
+<span class="nc" id="L295">		FXMLLoader loader = new FXMLLoader(Labymany.class.getResource(&quot;gui/view/StartScene.fxml&quot;));</span>
+		
+<span class="nc" id="L297">		AnchorPane startSceneAnchorPane = (AnchorPane) loader.load();</span>
+<span class="nc" id="L298">		initialiseRegionSize(startSceneAnchorPane);</span>
+		
+<span class="nc" id="L300">		Scene startScene = new Scene(startSceneAnchorPane);</span>
+		
+<span class="nc" id="L302">		primaryStage.setScene(startScene);</span>
+		
+<span class="nc" id="L304">		startSceneController = loader.getController();	</span>
+<span class="nc" id="L305">		startSceneController.setLogo(logo);</span>
+		
+<span class="nc" id="L307">	}</span>
+	
+	//------------------------- Partie concernant l'interface du menu principal -------------------------
+
+	/**
+	 * Cet accesseur permet d'obtenir l'instance de la classe qui permet de gérer l'interface du menu principal.
+	 * @return &lt;code&gt;mainSceneController&lt;/code&gt;.
+	 */
+	public MainSceneController getMainSceneController() {
+<span class="nc" id="L316">		return mainSceneController;</span>
+	}
+	
+	/**
+	 * Cette méthode déclenche l'animation d'apparition de l'interface du menu principal. Cette action est équivalente à &lt;code&gt;animateShowScene(false)&lt;/code&gt;.
+	 */
+	public void animateMainScene() {
+<span class="nc" id="L323">		animateMainScene(false);</span>
+<span class="nc" id="L324">	}</span>
+	
+	/**
+	 * Cette méthode déclenche l'animation d'apparition de l'interface du menu principal. 
+	 * @param animateLogo Si la valeur de ce booléen est &lt;code&gt;true&lt;/code&gt;, l'animation d'apparition du logo du jeu s'éffectue.
+	 */
+	public void animateMainScene(boolean animateLogo) {
+<span class="nc bnc" id="L331" title="All 2 branches missed.">		if (animateLogo) {</span>
+<span class="nc" id="L332">			mainSceneController.setLogoViewOpacityToZero();</span>
+<span class="nc" id="L333">			mainSceneController.showSettingsButton(0, 1000);</span>
+<span class="nc" id="L334">			mainSceneController.showPlayButton(333, 1000);</span>
+<span class="nc" id="L335">			mainSceneController.showTutorialOfTheGameButton(666, 1000);</span>
+<span class="nc" id="L336">			mainSceneController.showLogoView(1000, 1000);</span>
+		} else {
+<span class="nc" id="L338">			mainSceneController.showSettingsButton(0, 1000);</span>
+<span class="nc" id="L339">			mainSceneController.showPlayButton(500, 1000);</span>
+<span class="nc" id="L340">			mainSceneController.showTutorialOfTheGameButton(1000, 1000);</span>
+		}
+<span class="nc" id="L342">	}</span>
+	
+	/**
+	 * Cette méthode charge l'interface du menu principal.
+	 * @throws IOException Cette exception est levée si une erreur s'est produite pendant le chargement de l'interface .
+	 */
+	public void showMainScene() throws IOException {
+<span class="nc" id="L349">		FXMLLoader loader = new FXMLLoader(Labymany.class.getResource(&quot;gui/view/MainScene.fxml&quot;));</span>
+		
+<span class="nc" id="L351">		AnchorPane mainSceneAnchorPane = (AnchorPane) loader.load();</span>
+<span class="nc" id="L352">		initialiseRegionSize(mainSceneAnchorPane);</span>
+		
+<span class="nc" id="L354">		Scene mainScene = new Scene(mainSceneAnchorPane);</span>
+		
+<span class="nc" id="L356">		primaryStage.setScene(mainScene);</span>
+		
+<span class="nc" id="L358">		mainSceneController = loader.getController();</span>
+<span class="nc" id="L359">		mainSceneController.setLogo(logo);</span>
+<span class="nc" id="L360">		mainSceneController.setStart(this);</span>
+<span class="nc" id="L361">	}</span>
+	
+	//------------------------- Partie concernant l'interface du menu de sélection de la difficulté -------------------------
+	
+	/**
+	 * Cet accesseur permet d'obtenir l'instance de la classe qui permet de gérer l'interface où l'on peut choisir la difficulté du jeu.
+	 * @return &lt;code&gt;selectDifficultySceneController&lt;/code&gt;.
+	 */
+	public SelectDifficultySceneController getSelectDifficultySceneController() {
+<span class="nc" id="L370">		return selectDifficultySceneController;</span>
+	}
+	
+	/**
+	 * Cette méthode déclenche l'animation d'apparition de l'interface du menu de sélection de la difficulté.
+	 */
+	public void animateShowSelectDifficultyScene() {
+<span class="nc" id="L377">		selectDifficultySceneController.showSelectBeginnerDifficultyButton(0, 1000);</span>
+<span class="nc" id="L378">		selectDifficultySceneController.showSelectEasyDifficultyButton(250, 1000);</span>
+<span class="nc" id="L379">		selectDifficultySceneController.showSelectNormalDifficultyButton(500, 1000);</span>
+<span class="nc" id="L380">		selectDifficultySceneController.showSelectDifficultDifficultyButton(750, 1000);</span>
+<span class="nc" id="L381">		selectDifficultySceneController.showSelectExpertDifficultyButton(1000, 1000);</span>
+<span class="nc" id="L382">	}</span>
+	
+	/**
+	 * Cette méthode charge l'interface du menu de sélection de la difficulté.
+	 * @throws IOException Cette exception est levée si une erreur s'est produite pendant le chargement de l'interface .
+	 */
+	public void showSelectDifficultyScene() throws IOException {
+<span class="nc" id="L389">		FXMLLoader loader = new FXMLLoader(Labymany.class.getResource(&quot;gui/view/SelectDifficultyScene.fxml&quot;));</span>
+		
+<span class="nc" id="L391">		AnchorPane selectDifficultySceneAnchorPane = (AnchorPane) loader.load();</span>
+<span class="nc" id="L392">		initialiseRegionSize(selectDifficultySceneAnchorPane);</span>
+
+<span class="nc" id="L394">		Scene selectDifficultyScene = new Scene(selectDifficultySceneAnchorPane);</span>
+		
+<span class="nc" id="L396">		primaryStage.setScene(selectDifficultyScene);</span>
+		
+<span class="nc" id="L398">		selectDifficultySceneController = loader.getController();</span>
+<span class="nc" id="L399">		selectDifficultySceneController.setLogo(logo);</span>
+<span class="nc" id="L400">		selectDifficultySceneController.setStart(this);</span>
+<span class="nc" id="L401">	}</span>
+	
+	//------------------------- Partie concernant l'interface du jeu -------------------------
+	
+	/**
+	 * Cet accesseur permet d'obtenir l'instance de la classe qui permet de gérer l'interface du jeu.
+	 * @return &lt;code&gt;playSceneController&lt;/code&gt;.
+	 */
+	public PlaySceneController getPlaySceneController() {
+<span class="nc" id="L410">		return playSceneController;</span>
+	}
+	
+	/**
+	 * Cette méthode déclenche l'animation d'apparition de l'interface du jeu.
+	 */
+	public void animatePlayScene(EventHandler&lt;ActionEvent&gt; eventOnFinished) {
+<span class="nc" id="L417">		playSceneController.showMazeView(0, 1000, eventOnFinished);</span>
+<span class="nc" id="L418">	}</span>
+	
+	/**
+	 * Cette méthode charge l'interface du jeu.
+	 * @throws IOException Cette exception est levée si une erreur s'est produite pendant le chargement de l'interface.
+	 */
+	public void showPlayScene() throws IOException {
+<span class="nc" id="L425">		FXMLLoader loader = new FXMLLoader(Labymany.class.getResource(&quot;gui/view/PlayScene.fxml&quot;));</span>
+		
+<span class="nc" id="L427">		AnchorPane playSceneAnchorPane = (AnchorPane) loader.load();</span>
+<span class="nc" id="L428">		initialiseRegionSize(playSceneAnchorPane);</span>
+
+<span class="nc" id="L430">		Scene playScene = new Scene(playSceneAnchorPane);</span>
+		
+<span class="nc" id="L432">		primaryStage.setScene(playScene);</span>
+		
+<span class="nc" id="L434">		playSceneController = loader.getController();</span>
+<span class="nc" id="L435">		playSceneController.setStart(this);</span>
+<span class="nc" id="L436">	}</span>
+	
+	//------------------------- Partie concernant l'interface permettant de modifier les paramètres -------------------------
+	
+	/**
+	 * Cet accesseur permet d'obtenir l'instance de la classe qui permet de gérer l'interface des paramètres.
+	 * @return &lt;code&gt;settingsSceneController&lt;/code&gt;.
+	 */
+	public SettingsSceneController getSettingsSceneController() {
+<span class="nc" id="L445">		return settingsSceneController;</span>
+	}
+	
+	/**
+	 * Cette méthode déclenche l'animation d'apparition de l'interface permettant de modifier les paramètres.
+	 */
+	public void animateSettingsScene() {
+<span class="nc" id="L452">		settingsSceneController.showSettingsTabPane(0, 1000);</span>
+<span class="nc" id="L453">		settingsSceneController.showCancelModificationSettingsButton(500, 1000);</span>
+<span class="nc" id="L454">		settingsSceneController.showSaveModificationSettingsButton(1000, 1000);</span>
+<span class="nc" id="L455">	}</span>
+	
+	/**
+	 * Cette méthode charge l'interface permettant de modifier les paramètres.
+	 * @throws IOException cette exception est levée si une erreur s'est produite pendant le chargement de l'interface .
+	 */
+	public void showSettingsScene() throws IOException {
+<span class="nc" id="L462">		FXMLLoader loader = new FXMLLoader(Labymany.class.getResource(&quot;gui/view/SettingsScene.fxml&quot;));</span>
+		
+<span class="nc" id="L464">		AnchorPane settingsSceneAnchorPane = (AnchorPane) loader.load();</span>
+<span class="nc" id="L465">		initialiseRegionSize(settingsSceneAnchorPane);</span>
+		
+<span class="nc" id="L467">		Scene settingsScene = new Scene(settingsSceneAnchorPane);</span>
+		
+<span class="nc" id="L469">		primaryStage.setScene(settingsScene);</span>
+		
+<span class="nc" id="L471">		settingsSceneController = loader.getController();</span>
+<span class="nc" id="L472">		settingsSceneController.setStart(this);</span>
+<span class="nc" id="L473">	}</span>
+	
+	//------------------------- Partie concernant l'interface qui indique au joueur qu'il à réussi à résoudre le labyrinthe et qui lui propose de rejouer une partie ou de revenir sur le menu principal -------------------------
+	
+	/**
+	 * Cet accesseur permet d'obtenir l'instance de la classe qui permet de gérer l'interface qui indique au joueur qu'il à réussi à résoudre le labyrinthe, et qui lui propose de rejouer une partie ou de revenir sur le menu principal.
+	 * @return &lt;code&gt;winMenuSceneController&lt;/code&gt;.
+	 */
+	public WinMenuSceneController getWinMenuSceneController() {
+<span class="nc" id="L482">		return winMenuSceneController;</span>
+	}
+	
+	/**
+	 * Cette méthode déclenche l'animation d'apparition de l'interface qui indique au joueur qu'il à réussi à résoudre le labyrinthe et qui lui propose de rejouer une partie ou de revenir sur le menu principal.
+	 */
+	public void animateWinMenuScene() {
+<span class="nc" id="L489">		winMenuSceneController.showLogoView(0, 1000);</span>
+<span class="nc" id="L490">		winMenuSceneController.showCongratulationsMessageLabel(500, 1000);</span>
+<span class="nc" id="L491">		winMenuSceneController.showChoiceButtonBar(1000, 1000);</span>
+<span class="nc" id="L492">	}</span>
+	
+	/**
+	 * Cette méthode charge l'interface qui indique au joueur qu'il à réussi à résoudre le labyrinthe et qui lui propose de rejouer une partie ou de revenir sur le menu principal.
+	 * @throws IOException cette exception si une erreur s'est produite pendant le chargement de l'interface .
+	 */
+	public void showWinMenuScene() throws IOException {
+<span class="nc" id="L499">		FXMLLoader loader = new FXMLLoader(Labymany.class.getResource(&quot;gui/view/WinMenuScene.fxml&quot;));</span>
+		
+<span class="nc" id="L501">		AnchorPane winMenuSceneAnchorPane = (AnchorPane) loader.load();</span>
+<span class="nc" id="L502">		initialiseRegionSize(winMenuSceneAnchorPane);</span>
+		
+<span class="nc" id="L504">		Scene winMenuScene = new Scene(winMenuSceneAnchorPane);</span>
+		
+<span class="nc" id="L506">		primaryStage.setScene(winMenuScene);</span>
+		
+<span class="nc" id="L508">		winMenuSceneController = loader.getController();</span>
+<span class="nc" id="L509">		winMenuSceneController.setLogo(logo);</span>
+<span class="nc" id="L510">		winMenuSceneController.setStart(this);</span>
+	
+	
+	//------------------------- Partie concernant l'interface qui affiche le tutoriel du jeu -------------------------
+	
+<span class="nc" id="L515">	}</span>
+
+	/**
+	 * Cet accesseur permet d'obtenir l'instace de la classe qui gère l'interface qui affiche le tutoriel du jeu.
+	 * @return &lt;code&gt;tutorialOfTheGameSceneController&lt;/code&gt;
+	 */
+	public TutorialOfTheGameSceneController getTutorialOfTheGameSceneController() {
+<span class="nc" id="L522">		return tutorialOfTheGameSceneController;</span>
+	}
+	
+	/**
+	 * Cette méthode déclenche l'animation d'apparition de l'interface qui affiche le tutoriel 
+	 */
+	public void animateTutorialOfTheGameScene() {
+<span class="nc" id="L529">		tutorialOfTheGameSceneController.showTutorialScreenVBox(0, 1000);</span>
+<span class="nc" id="L530">		tutorialOfTheGameSceneController.showReturnToTheMainScene(1000, 1000);</span>
+<span class="nc" id="L531">	}</span>
+	
+	public void showTutorialOfTheGameScene() throws IOException {
+<span class="nc" id="L534">		FXMLLoader loader = new FXMLLoader(Labymany.class.getResource(&quot;gui/view/TutorialOfTheGameScene.fxml&quot;));</span>
+		
+<span class="nc" id="L536">		AnchorPane tutorialOfTheGameSceneAnchorPane = (AnchorPane) loader.load();</span>
+<span class="nc" id="L537">		initialiseRegionSize(tutorialOfTheGameSceneAnchorPane);</span>
+		
+<span class="nc" id="L539">		Scene tutorialOfTheGameScene = new Scene(tutorialOfTheGameSceneAnchorPane);</span>
+		
+<span class="nc" id="L541">		primaryStage.setScene(tutorialOfTheGameScene);</span>
+		
+<span class="nc" id="L543">		tutorialOfTheGameSceneController = loader.getController();</span>
+<span class="nc" id="L544">		tutorialOfTheGameSceneController.setStart(this);</span>
+<span class="nc" id="L545">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

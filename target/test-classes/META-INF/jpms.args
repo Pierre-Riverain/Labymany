@@ -1,0 +1,4 @@
+--patch-module
+labymany=_
+--add-reads
+labymany=ALL-UNNAMED

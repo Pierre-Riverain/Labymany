@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MazeGenerationEvent.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Labymany</a> &gt; <a href="index.source.html" class="el_package">fr.pierreriverain.maze</a> &gt; <span class="el_source">MazeGenerationEvent.java</span></div><h1>MazeGenerationEvent.java</h1><pre class="source lang-java linenums">package fr.pierreriverain.maze;
+
+/**
+ * Cette classe &quot;JavaBeans&quot; contient toutes les informations quand la génération du labyrinthe lance les notifications.
+ * @author Pierre Riverain
+ *
+ */
+public class MazeGenerationEvent {
+	
+	/**
+	 * Cet attribut représente le labyrinthe et contient toutes les informations le concernant.
+	 */
+	private Maze maze;
+	
+	/**
+	 * Cet attribut permet de dire si le labyrinthe est généré (&lt;code&gt;true&lt;/code&gt;) ou non (&lt;code&gt;false&lt;/code&gt;).
+	 */
+	private boolean generated;
+	
+	/**
+	 * Cet objet représente le cursuer de génération et contient toutes les informations le concernant.
+	 */
+	private MazeCursor mazeGenerationCursor;
+
+	/**
+	 * Constructeur par défaut.
+	 */
+	public MazeGenerationEvent() {
+<span class="nc" id="L29">		super();</span>
+<span class="nc" id="L30">	}</span>
+
+	/**
+	 * Ce constructeur permet de définir les différents paramètres dès la création de l'instance.
+	 * @param maze Le labyrinthe en cours de génération ou généré.
+	 * @param generated Ce booléen permet de dire si le labyrinthe est généré (&lt;code&gt;true&lt;/code&gt;) ou non (&lt;code&gt;false&lt;/code&gt;).
+	 * @param mazeGenerationCursor Cette instance représente le curseur de génération du labyrinthe.
+	 */
+	public MazeGenerationEvent(Maze maze, boolean generated, MazeCursor mazeGenerationCursor) {
+<span class="nc" id="L39">		super();</span>
+<span class="nc" id="L40">		this.maze = maze;</span>
+<span class="nc" id="L41">		this.generated = generated;</span>
+<span class="nc" id="L42">		this.mazeGenerationCursor = mazeGenerationCursor;</span>
+<span class="nc" id="L43">	}</span>
+
+	/**
+	 * Cet accesseur permet d'obtenir le labyrinthe (en cours de génération ou généré).
+	 * @return Le labyrinthe (en cours de génération ou généré).
+	 */
+	public Maze getMaze() {
+<span class="nc" id="L50">		return maze;</span>
+	}
+
+	/**
+	 * e muttateur permet de définir le Labyrinthe (en cours de génération ou généré).
+	 * @param maze Le labyrinthe (en cours de génération ou généré).
+	 */
+	public void setMaze(Maze maze) {
+<span class="nc" id="L58">		this.maze = maze;</span>
+<span class="nc" id="L59">	}</span>
+
+	/**
+	 * Cet accesseur permet de savoir si le labyrinthe est généré (&lt;code&gt;true&lt;/code&gt;) ou non (&lt;code&gt;false&lt;/code&gt;).
+	 * @return &lt;code&gt;true&lt;/code&gt; si le labyrinthe est généré, &lt;code&gt;false&lt;/code&gt; sinon.
+	 */
+	public boolean isGenerated() {
+<span class="nc" id="L66">		return generated;</span>
+	}
+
+	/**
+	 * Ce muttateur permet de dire si le labyrinthe est généré (&lt;code&gt;true&lt;/code&gt;) ou non (&lt;code&gt;false&lt;/code&gt;).
+	 * @param generated &lt;code&gt;true&lt;/code&gt; si le labyrinthe est généré, &lt;code&gt;false&lt;/code&gt; sinon.
+	 */
+	public void setGenerated(boolean generated) {
+<span class="nc" id="L74">		this.generated = generated;</span>
+<span class="nc" id="L75">	}</span>
+
+	/**
+	 * Cet accesseur permet d'obtenir l'objet représentant le curseur de génération ainsi que les informations le concernant.
+	 * @return Le curseur de génération.
+	 */
+	public MazeCursor getMazeGenerationCursor() {
+<span class="nc" id="L82">		return mazeGenerationCursor;</span>
+	}
+
+	/**
+	 * Ce muttateur permet de définir l'objet représentant le curseur de génération ainsi que les informations le concernant.
+	 * @param mazeGenerationCursor Le curseur de génération.
+	 */
+	public void setMazeGenerationCursor(MazeCursor mazeGenerationCursor) {
+<span class="nc" id="L90">		this.mazeGenerationCursor = mazeGenerationCursor;</span>
+<span class="nc" id="L91">	}</span>
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

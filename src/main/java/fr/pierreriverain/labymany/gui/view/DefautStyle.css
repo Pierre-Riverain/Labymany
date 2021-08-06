@@ -1,0 +1,19 @@
+.anchor-pane {
+	-fx-background_color: white;
+}
+
+.button {
+	-fx-background-color: linear-gradient(#7F6000 0%, #FFD966 25%, #FFD966 35%, #7F6000 100%);
+	-fx-effect: dropshadow(two-pass-box, #000000, 10, 0, 2, 2);
+	-fx-background-radius: 50px;
+}
+
+.button:pressed {
+	-fx-background-color: linear-gradient(#7F6000 0%, #FFD966 65%, #FFD966 75%, #7F6000 100%);
+	-fx-effect: dropshadow(two-pass-box, #000000, 0, 0, 0, 0);
+	-fx-background-radius: 50px;
+}
+
+#title_text {
+	-fx-text-fill: #BF9000
+}

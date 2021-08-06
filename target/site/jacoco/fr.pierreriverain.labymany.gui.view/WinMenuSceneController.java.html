@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WinMenuSceneController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Labymany</a> &gt; <a href="index.source.html" class="el_package">fr.pierreriverain.labymany.gui.view</a> &gt; <span class="el_source">WinMenuSceneController.java</span></div><h1>WinMenuSceneController.java</h1><pre class="source lang-java linenums">package fr.pierreriverain.labymany.gui.view;
+
+import java.io.IOException;
+
+
+import fr.pierreriverain.labymany.Labymany;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.util.Duration;
+
+/**
+ * Cette classe permet de gérer l'interface graphique qui indique au joueur qu'il à gagné, et lui propose soit de faire une nouvelle partie, soit de revenir sur le menu principal. Elle permet d'animer les composants graphique de cette scène.
+ * @author Pierre Riverain.
+ */
+public class WinMenuSceneController {
+	
+	/**
+	 * Cet objet représente l'&lt;code&gt;ImageView&lt;/code&gt; qui permet d'afficher le logo de Labymany. Cet objet permet d'animer ce composant graphique.
+	 */
+	@FXML
+	private ImageView logoView;
+	
+	/**
+	 * Cet objet représente le &lt;code&gt;Label&lt;/code&gt; qui permet d'afficher le message félicitant le joueur pour avoir résolu le labyrinthe. Cet objet permet d'animer ce composant graphique.
+	 */
+	@FXML
+	private Label congratulationsMessageLabel;
+	
+	/**
+	 * Cet objet représente la barre de bouton. Cette barre contient tous les boutons qui permettent à l'utilisateur de choisir s'il veut faire une nouvelle partie en choisissant une difficulté inférieure, supérieure, la même difficulté ou revenir au menu principal.
+	 */
+	@FXML
+	private ButtonBar choiceButtonBar;
+	
+	/**
+	 * Cet objet représente le &lt;code&gt;Button&lt;/code&gt; qui permet de rejouer à une difficulté inférieure (à une taille inférieure) du labyrinthe.
+	 * Cet objet permet également d'animer ce composant graphique.
+	 */
+	@FXML
+	private Button replayWithLowerDifficultyButton;
+	
+	/**
+	 * Cet objet représente le &lt;code&gt;Button&lt;/code&gt; qui permet de rejouer avec la même difficulté (la même taille) du labyrinthe. 
+	 * Cet objet permet également d'animer ce composant graphique.
+	 */
+	@FXML
+	private Button replayWithSameDifficultyButton;
+
+	/**
+	 * Cet objet représente le &lt;code&gt;Button&lt;/code&gt; qui permet de rejouer à une difficulté supérieure (à une taille supérieure) du labyrinthe. 
+	 * Cet objet permet également d'animer ce composant graphique.
+	 */
+	@FXML
+	private Button replayWithHigherDifficultyButton;
+	
+	/**
+	 * Cet objet représente le &lt;code&gt;Button&lt;/code&gt; qui permet de retourner au menu principal de Labymany.
+	 * Cet objet permet également d'animer ce composant graphique.
+	 */
+	@FXML
+	private Button returnToTheMainMenuButton;
+	
+	/**
+	 * Cet objet représente l'instance de la classe de démarrage de Labymany. Cet objet permet de retourner sur les autres scènes du jeu.
+	 */
+	private Labymany start;
+	
+	/**
+	 * Cet entier contient le nombre de colonnes actuel du labyrinthe.
+	 */
+	private int nbrMazeColumns;
+	
+	/**
+	 * cet entier contient le nombre de lignes actuel du labyrinthe.
+	 */
+	private int nbrMazeRows;
+	
+
+	public WinMenuSceneController() {
+<span class="nc" id="L90">		super();</span>
+<span class="nc" id="L91">	}</span>
+
+	/**
+	 * Cet accesseur permet d'obtenir l'instance de la classe de démarrage.
+	 * @return L'instance de la classe de démarrage.
+	 */
+	public Labymany getStart() {
+<span class="nc" id="L98">		return start;</span>
+	}
+
+	/**
+	 * Ce muttateur permet de définir l'instance de la classe de démarrage. Il permet également de désactiver certains boutons lorsqu'une des limites est atteinte.
+	 * @param start L'instance de la classe de démarrage.
+	 */
+	public void setStart(Labymany start) {
+<span class="nc" id="L106">		this.start = start;</span>
+		
+<span class="nc bnc" id="L108" title="All 4 branches missed.">		if (start.getPlaySceneController().getNbrColumns() == 4 &amp;&amp; start.getPlaySceneController().getNbrRows() == 4) {</span>
+<span class="nc" id="L109">			choiceButtonBar.getButtons().remove(replayWithLowerDifficultyButton);</span>
+		}
+		
+<span class="nc bnc" id="L112" title="All 4 branches missed.">		if (start.getPlaySceneController().getNbrColumns() == 128 &amp;&amp; start.getPlaySceneController().getNbrRows() == 64) {</span>
+<span class="nc" id="L113">			choiceButtonBar.getButtons().remove(replayWithHigherDifficultyButton);</span>
+		}
+<span class="nc" id="L115">	}</span>
+
+	/**
+	 * Cet accesseur permet d'obtenir le logo du jeu qui à été défini pour cette scène.
+	 * 
+	 * Cet accesseur peut être utilisé pour vérifier si le bon logo à été défini pour cette scène par exemple.
+	 * @return Le logo défini pour cette scène;
+	 */
+	public Image getLogo() {
+<span class="nc" id="L124">		return logoView.getImage();</span>
+	}
+	
+	/**
+	 * Ce muttateur permet de définir le logo du jeu pour cette scène.
+	 * @param logo Le logo du jeu pour cette scène.
+	 */
+	public void setLogo(Image logo) {
+<span class="nc" id="L132">		logoView.setImage(logo);</span>
+<span class="nc" id="L133">	}</span>
+
+	/**
+	 * Cette méthode permet d'initialiser les composant graphique de cette scène. Elle permet d'initialiser l'opacité des composants graphique à 0. 
+	 */
+	@FXML
+	private void initialize() {
+<span class="nc" id="L140">		logoView.setOpacity(0.00d);</span>
+<span class="nc" id="L141">		congratulationsMessageLabel.setOpacity(0.00d);</span>
+<span class="nc" id="L142">		choiceButtonBar.setOpacity(0.00d);</span>
+<span class="nc" id="L143">	}</span>
+	
+	/**
+	 * Cette méthode est appelée lorsque l'utilisateur appuis sur le bouton &lt;code&gt;replayWithLowerDifficultyButton&lt;/code&gt;. Elle relance une partie de labyrinthe avec une difficulté inférieure
+	 * (une taille inférieure).
+	 */
+	@FXML
+	private void onReplayWithLowerDifficultyButtonClicked() {
+<span class="nc" id="L151">		int columns = start.getPlaySceneController().getNbrColumns(), rows = start.getPlaySceneController().getNbrRows();</span>
+<span class="nc bnc" id="L152" title="All 2 branches missed.">		if(columns &gt; rows) {</span>
+<span class="nc" id="L153">			replayGame(columns - 1, rows);</span>
+		} else {
+<span class="nc" id="L155">			replayGame((rows - 1) * 2, rows - 1);</span>
+		}
+<span class="nc" id="L157">	}</span>
+	
+	/**
+	 * Cette méthode est appelée lorsque l'utilisateur appuis sur le bouton &lt;code&gt;replayWithSameDifficultyButton&lt;/code&gt;. Elle relance une partie de labyrinthe avec la même difficulté 
+	 * (la même taille).
+	 */
+	@FXML
+	private void onReplayWithSameDifficultyButtonClicked() {
+<span class="nc" id="L165">		replayGame(start.getPlaySceneController().getNbrColumns(), start.getPlaySceneController().getNbrRows());</span>
+<span class="nc" id="L166">	}</span>
+	
+	/**
+	 * Cette méthode est appelée lorsque l'utilisateur appuis sur le bouton &lt;code&gt;replayWithHigher&lt;/code&gt;. Elle relance une partie de labyrinthe avec une difficulté supérieure
+	 * (une taille supérieure).
+	 */
+	@FXML
+	private void onReplayWithHigherDifficultyButtonClicked() {
+<span class="nc" id="L174">		int columns = start.getPlaySceneController().getNbrColumns(), rows = start.getPlaySceneController().getNbrRows();</span>
+<span class="nc bnc" id="L175" title="All 2 branches missed.">		if(columns &lt; rows * 2) {</span>
+<span class="nc" id="L176">			replayGame(columns + 1, rows);</span>
+		} else {
+<span class="nc" id="L178">			replayGame(rows + 1, rows + 1);</span>
+		}
+<span class="nc" id="L180">	}</span>
+	
+	/**
+	 * Cette méthode est appelée lorsque l'utilisateur appuis sur le bouton &lt;code&gt;returnToTheMainMenuButton&lt;/code&gt;. Elle permet de retourner au menu principal.
+	 */
+	@FXML
+	private void onReturnToTheMainButtonClicked() {
+<span class="nc" id="L187">		EventHandler&lt;ActionEvent&gt; actionOnAnimationFinished = (actionEvent) -&gt; {</span>
+			try {
+
+<span class="nc" id="L190">				start.showMainScene();</span>
+<span class="nc" id="L191">				start.animateMainScene(true);</span>
+				
+<span class="nc" id="L193">			} catch (IOException e) {</span>
+<span class="nc" id="L194">				start.showError(e, &quot;L'erreur suivante s'est produite pendant le chargement du menu principal. Désolé pour le désagrément encouru : &quot;);</span>
+<span class="nc" id="L195">			}</span>
+<span class="nc" id="L196">		};</span>
+		
+<span class="nc" id="L198">		hideChoiceButtonBar(0, 1000);</span>
+<span class="nc" id="L199">		hideCongratulationsMessageLabel(500, 1000);</span>
+<span class="nc" id="L200">		hideLogoView(1000, 1000, actionOnAnimationFinished);</span>
+<span class="nc" id="L201">	}</span>
+	
+	/**
+	 * Cette méthode permet de rejouer une partie au labyrinthe.
+	 * @param columns Le nombre de colonnes que doit avoir le labyrinthe
+	 * @param rows Le nombre de Lignes que doit avoir le labyrinthe.
+	 */
+	private void replayGame(int columns, int rows) {
+<span class="nc" id="L209">		EventHandler&lt;ActionEvent&gt; actionOnAnimationFinished = (actionEvent) -&gt; {</span>
+<span class="nc" id="L210">			Platform.runLater(()-&gt; {</span>
+				try {
+
+<span class="nc" id="L213">					start.showPlayScene();</span>
+<span class="nc" id="L214">					start.getPlaySceneController().setMazeSize(columns, rows);</span>
+<span class="nc" id="L215">					start.animatePlayScene(new EventHandler&lt;ActionEvent&gt;() {</span>
+
+						@Override
+						public void handle(ActionEvent event) {
+							
+<span class="nc" id="L220">							Platform.runLater(() -&gt; {</span>
+<span class="nc" id="L221">								start.getPlaySceneController().generateMaze();</span>
+<span class="nc" id="L222">							});</span>
+<span class="nc" id="L223">						}</span>
+					});
+					
+<span class="nc" id="L226">				} catch (IOException e) {</span>
+<span class="nc" id="L227">					start.showError(e, &quot;L'erreur suivante s'est produite pendant le chargement de la partie. Désolé pour le désagrément encouru : &quot;);</span>
+<span class="nc" id="L228">				}</span>
+<span class="nc" id="L229">			});</span>
+<span class="nc" id="L230">		};</span>
+		
+<span class="nc" id="L232">		hideChoiceButtonBar(0, 1000);</span>
+<span class="nc" id="L233">		hideCongratulationsMessageLabel(500, 1000);</span>
+<span class="nc" id="L234">		hideLogoView(1000, 1000, actionOnAnimationFinished);</span>
+<span class="nc" id="L235">	}</span>
+	
+	/**
+		 * Cette méthode déclenche l'animation d'apparition de &lt;code&gt;logoView&lt;/code&gt;. Cette méthode est équivalent à &lt;code&gt;showLogoView(double,double,null)&lt;/code&gt;.
+		 * @param delay Délai avant le déclenchement de l'animation.
+		 * @param duration Durée de l'animation.
+		 */
+	public void showLogoView(double delay, double duration) {
+<span class="nc" id="L243">		showLogoView(delay, duration, null);</span>
+<span class="nc" id="L244">	}</span>
+
+	/**
+	 * Cette méthode déclenche l'animation d'apparition de &lt;code&gt;logoView&lt;/code&gt;.
+	 * @param delay Délai avant le déclenchement de l'animation.
+	 * @param duration Durée de l'animation.
+	 * @param eventOnFinished Action à effectuer quand l'animation est terminé.
+	 */
+	public void showLogoView(double delay, double duration, EventHandler&lt;ActionEvent&gt; eventOnFinished) {
+<span class="nc" id="L253">		Timeline showLogoViewAnimation = new Timeline(30,</span>
+<span class="nc" id="L254">				new KeyFrame(Duration.ZERO, new KeyValue(logoView.opacityProperty(), 0.00d)),</span>
+<span class="nc" id="L255">				new KeyFrame(new Duration(duration), new KeyValue(logoView.opacityProperty(), 1.00d)));</span>
+<span class="nc" id="L256">		showLogoViewAnimation.setDelay(new Duration(delay));</span>
+<span class="nc bnc" id="L257" title="All 2 branches missed.">		if (eventOnFinished != null) {</span>
+<span class="nc" id="L258">			showLogoViewAnimation.setOnFinished(eventOnFinished);</span>
+		}
+<span class="nc" id="L260">		showLogoViewAnimation.play();</span>
+<span class="nc" id="L261">	}</span>
+
+	/**
+	 * Cette méthode déclenche l'animation de disparition de &lt;code&gt;logoView&lt;/code&gt;. Cette méthode est équivalent à &lt;code&gt;showLogoView(double,double,null)&lt;/code&gt;.
+	 * @param delay Délai avant le déclenchement de l'animation.
+	 * @param duration Durée de l'animation.
+	 */
+	public void hideLogoView(double delay, double duration) {
+<span class="nc" id="L269">		hideLogoView(delay, duration, null);</span>
+<span class="nc" id="L270">	}</span>
+
+	/**
+	 * Cette méthode déclenche l'animation de disparition de &lt;code&gt;logoView&lt;/code&gt;.
+	 * @param delay Délai avant le déclenchement de l'animation.
+	 * @param duration Durée de l'animation.
+	 * @param eventOnFinished Action à effectuer quand l'animation est terminé.
+	 */
+	public void hideLogoView(double delay, double duration, EventHandler&lt;ActionEvent&gt; eventOnFinished) {
+<span class="nc" id="L279">		Timeline hideLogoViewAnimation = new Timeline(30,</span>
+<span class="nc" id="L280">				new KeyFrame(Duration.ZERO, new KeyValue(logoView.opacityProperty(), 1.00d)),</span>
+<span class="nc" id="L281">				new KeyFrame(new Duration(duration), new KeyValue(logoView.opacityProperty(), 0.00d)));</span>
+<span class="nc" id="L282">		hideLogoViewAnimation.setDelay(new Duration(delay));</span>
+<span class="nc bnc" id="L283" title="All 2 branches missed.">		if (eventOnFinished != null) {</span>
+<span class="nc" id="L284">			hideLogoViewAnimation.setOnFinished(eventOnFinished);</span>
+		}
+<span class="nc" id="L286">		hideLogoViewAnimation.play();</span>
+<span class="nc" id="L287">	}</span>
+	
+	/**
+		 * Cette méthode déclenche l'animation d'apparition de &lt;code&gt;congratulationsMessageLabel&lt;/code&gt;. Cette méthode est équivalent à &lt;code&gt;showCongratulationsMessageLabel(double,double,null)&lt;/code&gt;.
+		 * @param delay Délai avant le déclenchement de l'animation.
+		 * @param duration Durée de l'animation.
+		 */
+	public void showCongratulationsMessageLabel(double delay, double duration) {
+<span class="nc" id="L295">		showCongratulationsMessageLabel(delay, duration, null);</span>
+<span class="nc" id="L296">	}</span>
+
+	/**
+	 * Cette méthode déclenche l'animation d'apparition de &lt;code&gt;congratulationsMessageLabel&lt;/code&gt;.
+	 * @param delay Délai avant le déclenchement de l'animation.
+	 * @param duration Durée de l'animation.
+	 * @param eventOnFinished Action à effectuer quand l'animation est terminé.
+	 */
+	public void showCongratulationsMessageLabel(double delay, double duration, EventHandler&lt;ActionEvent&gt; eventOnFinished) {
+<span class="nc" id="L305">		Timeline showCongratulationsMessageLabelAnimation = new Timeline(30,</span>
+<span class="nc" id="L306">				new KeyFrame(Duration.ZERO, new KeyValue(congratulationsMessageLabel.opacityProperty(), 0.00d)),</span>
+<span class="nc" id="L307">				new KeyFrame(new Duration(duration), new KeyValue(congratulationsMessageLabel.opacityProperty(), 1.00d)));</span>
+<span class="nc" id="L308">		showCongratulationsMessageLabelAnimation.setDelay(new Duration(delay));</span>
+<span class="nc bnc" id="L309" title="All 2 branches missed.">		if (eventOnFinished != null) {</span>
+<span class="nc" id="L310">			showCongratulationsMessageLabelAnimation.setOnFinished(eventOnFinished);</span>
+		}
+<span class="nc" id="L312">		showCongratulationsMessageLabelAnimation.play();</span>
+<span class="nc" id="L313">	}</span>
+
+	/**
+	 * Cette méthode déclenche l'animation de disparition de &lt;code&gt;congratulationsMessageLabel&lt;/code&gt;. Cette méthode est équivalent à &lt;code&gt;showCongratulationsMessageLabel(double,double,null)&lt;/code&gt;.
+	 * @param delay Délai avant le déclenchement de l'animation.
+	 * @param duration Durée de l'animation.
+	 */
+	public void hideCongratulationsMessageLabel(double delay, double duration) {
+<span class="nc" id="L321">		hideCongratulationsMessageLabel(delay, duration, null);</span>
+<span class="nc" id="L322">	}</span>
+
+	/**
+	 * Cette méthode déclenche l'animation de disparition de &lt;code&gt;congratulationsMessageLabel&lt;/code&gt;.
+	 * @param delay Délai avant le déclenchement de l'animation.
+	 * @param duration Durée de l'animation.
+	 * @param eventOnFinished Action à effectuer quand l'animation est terminé.
+	 */
+	public void hideCongratulationsMessageLabel(double delay, double duration, EventHandler&lt;ActionEvent&gt; eventOnFinished) {
+<span class="nc" id="L331">		Timeline hideCongratulationsMessageLabelAnimation = new Timeline(30,</span>
+<span class="nc" id="L332">				new KeyFrame(Duration.ZERO, new KeyValue(congratulationsMessageLabel.opacityProperty(), 1.00d)),</span>
+<span class="nc" id="L333">				new KeyFrame(new Duration(duration), new KeyValue(congratulationsMessageLabel.opacityProperty(), 0.00d)));</span>
+<span class="nc" id="L334">		hideCongratulationsMessageLabelAnimation.setDelay(new Duration(delay));</span>
+<span class="nc bnc" id="L335" title="All 2 branches missed.">		if (eventOnFinished != null) {</span>
+<span class="nc" id="L336">			hideCongratulationsMessageLabelAnimation.setOnFinished(eventOnFinished);</span>
+		}
+<span class="nc" id="L338">		hideCongratulationsMessageLabelAnimation.play();</span>
+<span class="nc" id="L339">	}</span>
+	
+	/**
+	 * Cette méthode déclenche l'animation d'apparition de &lt;code&gt;choiceButtonBar&lt;/code&gt;. Cette méthode est équivalent à &lt;code&gt;showChoiceButtonBar(double,double,null)&lt;/code&gt;.
+	 * @param delay Délai avant le déclenchement de l'animation.
+	 * @param duration Durée de l'animation.
+	 */
+	public void showChoiceButtonBar(double delay, double duration) {
+<span class="nc" id="L347">		showChoiceButtonBar(delay, duration, null);</span>
+<span class="nc" id="L348">	}</span>
+
+	/**
+	 * Cette méthode déclenche l'animation d'apparition de &lt;code&gt;choiceButtonBar&lt;/code&gt;.
+	 * @param delay Délai avant le déclenchement de l'animation.
+	 * @param duration Durée de l'animation.
+	 * @param eventOnFinished Action à effectuer quand l'animation est terminé.
+	 */
+	public void showChoiceButtonBar(double delay, double duration, EventHandler&lt;ActionEvent&gt; eventOnFinished) {
+<span class="nc" id="L357">		Timeline showChoiceButtonBarAnimation = new Timeline(30,</span>
+<span class="nc" id="L358">			new KeyFrame(Duration.ZERO, new KeyValue(choiceButtonBar.opacityProperty(), 0.00d)),</span>
+<span class="nc" id="L359">			new KeyFrame(new Duration(duration), new KeyValue(choiceButtonBar.opacityProperty(), 1.00d)));</span>
+<span class="nc" id="L360">		showChoiceButtonBarAnimation.setDelay(new Duration(delay));</span>
+<span class="nc bnc" id="L361" title="All 2 branches missed.">		if (eventOnFinished != null) {</span>
+<span class="nc" id="L362">			showChoiceButtonBarAnimation.setOnFinished(eventOnFinished);</span>
+		}
+<span class="nc" id="L364">		showChoiceButtonBarAnimation.play();</span>
+<span class="nc" id="L365">	}</span>
+
+	/**
+	 * Cette méthode déclenche l'animation de disparition de &lt;code&gt;choiceButtonBar&lt;/code&gt;. Cette méthode est équivalent à &lt;code&gt;showChoiceButtonBar(double,double,null)&lt;/code&gt;.
+	 * @param delay Délai avant le déclenchement de l'animation.
+	 * @param duration Durée de l'animation.
+	 */
+	public void hideChoiceButtonBar(double delay, double duration) {
+<span class="nc" id="L373">		hideChoiceButtonBar(delay, duration, null);</span>
+<span class="nc" id="L374">	}</span>
+
+	/**
+	 * Cette méthode déclenche l'animation de disparition de &lt;code&gt;choiceButtonBar&lt;/code&gt;.
+	 * @param delay Délai avant le déclenchement de l'animation.
+	 * @param duration Durée de l'animation.
+	 * @param eventOnFinished Action à effectuer quand l'animation est terminé.
+	 */
+	public void hideChoiceButtonBar(double delay, double duration, EventHandler&lt;ActionEvent&gt; eventOnFinished) {
+<span class="nc" id="L383">		Timeline hideChoiceButtonBarAnimation = new Timeline(30,</span>
+<span class="nc" id="L384">			new KeyFrame(Duration.ZERO, new KeyValue(choiceButtonBar.opacityProperty(), 1.00d)),</span>
+<span class="nc" id="L385">			new KeyFrame(new Duration(duration), new KeyValue(choiceButtonBar.opacityProperty(), 0.00d)));</span>
+<span class="nc" id="L386">		hideChoiceButtonBarAnimation.setDelay(new Duration(delay));</span>
+<span class="nc bnc" id="L387" title="All 2 branches missed.">		if (eventOnFinished != null) {</span>
+<span class="nc" id="L388">			hideChoiceButtonBarAnimation.setOnFinished(eventOnFinished);</span>
+		}
+<span class="nc" id="L390">		hideChoiceButtonBarAnimation.play();</span>
+<span class="nc" id="L391">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
